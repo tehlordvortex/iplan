@@ -5,7 +5,7 @@
 ## Planned features
 
 * Group ToDos together to form a "Goal"
-* Group Plans together to form a "Plan"
+* Group Goals together to form a "Plan"
 * Sync to Dropbox and GDrive
 * Progressive Web App
 * Package with Electron
