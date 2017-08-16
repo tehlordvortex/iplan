@@ -17,6 +17,10 @@
 Not available for end users yet. Be prepared to nuke your IndexedDB as I progress.
 New features might not be compatible with older databases.
 
+## Live demo
+Available here: https://tehlordvortex.github.io/iplan.
+Updated on every major feature. Or major bugfix. Sometimes randomly.
+
 
 ## Build Setup
 
