@@ -26,6 +26,7 @@
                 full-width
                 :nudge-left="40"
                 max-width="290px"
+                class="hidden-xs-only"
               >
                 <v-text-field
                   slot="activator"
@@ -48,6 +49,34 @@
                   </template>
                 </v-date-picker>
               </v-menu>
+              <v-dialog
+                persistent
+                v-model="modal"
+                lazy
+                full-width
+                class="hidden-sm-and-up"
+              >
+                 <v-text-field
+                  slot="activator"
+                  label="Date when ToDo is due"
+                  v-model="dueDate"
+                  prepend-icon="event"
+                  readonly
+                ></v-text-field>
+                <v-date-picker
+                  v-model="dueDate"
+                  no-title
+                  scrollable
+                  actions
+                >
+                  <template scope=" { save, cancel }">
+                    <v-card-actions>
+                      <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
+                      <v-btn flat primary @click.native="save()">Save</v-btn>
+                    </v-card-actions>
+                  </template>
+                </v-date-picker>
+              </v-dialog>
             </v-flex>
           </v-layout>
           <v-layout row>
@@ -61,6 +90,7 @@
                 full-width
                 :nudge-left="40"
                 max-width="290px"
+                class="hidden-xs-only"
               >
                 <v-text-field
                   slot="activator"
@@ -83,6 +113,34 @@
                   </template>
                 </v-time-picker>
               </v-menu>
+              <v-dialog
+                persistent
+                v-model="modalTime"
+                lazy
+                full-width
+                class="hidden-sm-and-up"
+              >
+                <v-text-field
+                  slot="activator"
+                  label="Time when ToDo is due"
+                  v-model="dueTime"
+                  prepend-icon="alarm"
+                  readonly
+                ></v-text-field>
+                <v-time-picker
+                  v-model="dueTime"
+                  no-title
+                  scrollable
+                  actions
+                >
+                  <template scope=" { save, cancel }">
+                    <v-card-actions>
+                      <v-btn flat primary @click.native="cancel()">Cancel</v-btn>
+                      <v-btn flat primary @click.native="save()">Save</v-btn>
+                    </v-card-actions>
+                  </template>
+                </v-time-picker>
+              </v-dialog>
             </v-flex>
           </v-layout>
         </v-card-text>
@@ -106,7 +164,9 @@ export default {
       dueTime: null,
       name: null,
       menuTime: false,
-      menu: false
+      menu: false,
+      modalTime: false,
+      modal: false
     }
   },
   methods: {
