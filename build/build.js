@@ -8,9 +8,12 @@ var path = require('path')
 var chalk = require('chalk')
 var webpack = require('webpack')
 var config = require('../config')
+//var process = require('process')
 var webpackConfig = require('./webpack.prod.conf')
 
-var spinner = ora('building for production...')
+
+
+var spinner = ora('building for production' + ((process.env.BUILD_GH_PAGES) ? ' (gh-pages)' : '') + '...' )
 spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
