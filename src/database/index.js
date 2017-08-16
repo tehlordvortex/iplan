@@ -50,7 +50,8 @@ class DB {
 		}
 
 	}
-	updateToDo(name, dueDate, dueTime, done, callback) {
+	deleteToDo(todo) {
+		this.todos.remove(todo)
 	}
 }
 let dbInstance = new DB();
