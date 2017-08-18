@@ -1,36 +1,41 @@
 import Loki from 'lokijs'
 import LokiIndexedAdapter from 'lokijs/src/loki-indexed-adapter.js'
-
 class DB {
 	constructor() {
-		this.ready = false
-		this.readyCallbacks = [];
-		this.idbAdapter = new LokiIndexedAdapter()
-		this.db = new Loki('iplan-data.db', {
+		this._ready = false
+		this._readyCallbacks = [];
+		this._idbAdapter = new LokiIndexedAdapter()
+		this._db = new Loki('iplan-data.db', {
 			autoload: true,
 			autoloadCallback: this.initializeDB.bind(this),
 			autosave: true,
 			autosaveInterval: 4000,
-			adapter: this.idbAdapter,
+			adapter: this._idbAdapter,
 		})
 		this.whenReady = this.whenReady.bind(this)
 
 	}
 	initializeDB() {
-		if (!(this.todos = this.db.getCollection('todos'))) {
-			this.todos = this.db.addCollection('todos')
+		if (!(this._todos = this._db.getCollection('todos'))) {
+			this._todos = this._db.addCollection('todos')
 		}
-		this.ready = true;
-		this.readyCallbacks.reduce((accum, cb) => cb(this), 0)
+		this._ready = true;
+		this._readyCallbacks.reduce((_, cb) => cb(this), 0)
+	}
+	isReady() {
+		return this._ready
 	}
 	whenReady(cb) {
-		this.readyCallbacks.push(cb)
+		this._readyCallbacks.push(cb)
 	}
 	getDB() {
-		return this.db;
+		return this._db;
+	}
+	getTodos() {
+		return this._todos;
 	}
 	addToDo(name, dueDate, dueTime, callback) {
-		if (!this.todos) {
+		if (!this._todos) {
 			callback(true, null);
 			return;
 		}
@@ -41,8 +46,8 @@ class DB {
 			dueTime: dueTime,
 			done: false
 		}
-		console.log(todo);
-		if(!this.todos.insert(todo)) {
+	 	console.log(todo);
+		if(!this._todos.insert(todo)) {
 			callback(true, todo._id)
 		}
 		else {
@@ -50,8 +55,14 @@ class DB {
 		}
 
 	}
+	getToDo(id) {
+		return this._todos.find({_id: id})[0]
+	}
+	updateToDo(todo) {
+		this._todos.update(todo)
+	}
 	deleteToDo(todo) {
-		this.todos.remove(todo)
+		this._todos.remove(todo)
 	}
 }
 let dbInstance = new DB();

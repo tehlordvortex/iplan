@@ -2,7 +2,7 @@
 	<v-layout row>
     <v-flex xs12 sm6 offset-sm3>
       <v-toolbar flat class="purple" dark>
-        <v-toolbar-title>New ToDo</v-toolbar-title>
+        <v-toolbar-title>Edit ToDo</v-toolbar-title>
       </v-toolbar>
       <v-card class="primary white">
         <v-card-text>
@@ -143,9 +143,21 @@
               </v-dialog>
             </v-flex>
           </v-layout>
+          <v-layout row>
+            <v-flex xs12>
+              <v-checkbox
+                primary
+                hide-details
+                :input-value="done"
+                @click.native="done = !done"
+                label="Done"
+              >
+              </v-checkbox>
+            </v-flex>
+          </v-layout>
         </v-card-text>
         <v-card-actions>
-          <v-btn class="blue--text" @click.native.stop="createToDo" primary flat>Create</v-btn>
+          <v-btn class="blue--text" @click.native.stop="editToDo" primary flat>Update</v-btn>
           <v-btn class="red--text" @click.native.stop="goBack" flat>Cancel</v-btn>
         </v-card-actions>
       </v-card>
@@ -155,13 +167,24 @@
 
 <script>
 import database from "../database"
-window.database = database;
 export default {
-	name: 'createToDo',
+	name: 'editToDo',
+  created() {
+      if(database.isReady()) {
+        this.buildData()
+      }
+      else {
+        database.whenReady(() => {
+          this.buildData()
+        })
+      }
+  },
   data() {
     return {
+      todo: null,
       dueDate: null,
       dueTime: null,
+      done: false,
       name: null,
       menuTime: false,
       menu: false,
@@ -170,9 +193,21 @@ export default {
     }
   },
   methods: {
-    createToDo: function () {
-      console.log(this.name, this.dueDate, this.dueTime);
-      database.addToDo(this.name, this.dueDate, this.dueTime, (err, id) => console.log(err, id))
+    buildData: function () {
+      this.todo = database.getToDo(this.$route.params.id)
+      console.log(this.todo)
+      this.name = this.todo.name
+      this.dueDate = this.todo.dueDate
+      this.dueTime = this.todo.dueTime
+      this.done = this.todo.done
+      console.log(this.dueDate)
+    },
+    editToDo: function () {
+      this.todo.name = this.name
+      this.todo.dueDate = this.dueDate
+      this.todo.dueTime = this.dueTime
+      this.todo.done = this.done
+      database.updateToDo(this.todo)
       this.$router.push('/')
     },
     goBack: function () {

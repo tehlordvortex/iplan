@@ -3,6 +3,7 @@
     <v-navigation-drawer
       persistent
       light
+      disable-route-watcher
       v-model="drawer">
        <v-toolbar flat class="transparent">
         <v-list class="pa-0">
@@ -42,7 +43,12 @@ export default {
         {
           name: "Dashboard",
           url: '/',
-          icon: 'home'
+          icon: 'dashboard'
+        },
+        {
+          name: "ToDos",
+          url: '/todos',
+          icon: 'reorder'
         }
       ],
       drawer: false
