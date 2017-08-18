@@ -37,7 +37,6 @@
                 ></v-text-field>
                 <v-date-picker
                   v-model="dueDate"
-                  no-title
                   scrollable
                   actions
                 >
@@ -65,7 +64,6 @@
                 ></v-text-field>
                 <v-date-picker
                   v-model="dueDate"
-                  no-title
                   scrollable
                   actions
                 >
@@ -101,7 +99,6 @@
                 ></v-text-field>
                 <v-time-picker
                   v-model="dueTime"
-                  no-title
                   scrollable
                   actions
                 >
@@ -129,7 +126,6 @@
                 ></v-text-field>
                 <v-time-picker
                   v-model="dueTime"
-                  no-title
                   scrollable
                   actions
                 >
