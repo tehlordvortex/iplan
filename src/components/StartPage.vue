@@ -1,7 +1,7 @@
 <template>
     <div id="content">
         <v-layout row>
-            <v-flex v-if="ready && noTodos" xs6 sm6 offset-sm3>
+            <v-flex v-if="ready && noTodos" xs12 sm6 offset-sm3>
                 <v-card class="primary white">
                     <v-card-title primary-title><h3 class="headline mb-0">SO BLENK</h3></v-card-title>
                     <v-card-text>You have yet to create any ToDo, Ser User.</v-card-text>
