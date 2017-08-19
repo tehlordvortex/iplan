@@ -19,6 +19,10 @@ class DB {
 		if (!(this._todos = this._db.getCollection('todos'))) {
 			this._todos = this._db.addCollection('todos')
 		}
+		if (!(this._goals = this._db.getCollection('goals'))) {
+
+			this._goals = this._db.addCollection('goals')
+		}
 		this._ready = true;
 		this._readyCallbacks.reduce((_, cb) => cb(this), 0)
 	}
@@ -34,19 +38,41 @@ class DB {
 	getTodos() {
 		return this._todos;
 	}
+	getGoals() {
+		return this._goals;
+	}
+	addGoal(name, dueDate, todo_ids, callback) {
+		if(!this._goals) {
+			callback(true, null)
+		}
+		var goal = {
+			_id: btoa(new Date().toISOString()),
+			name: name,
+			dueDate: dueDate,
+			todo_ids: todo_ids
+		}
+		if (!this._goals.insert(goal)) {
+			callback(true, null)
+		}
+		else {
+			callback(false, goal._id)
+		}
+	}
+	updateGoal(goal) {
+		this._goals.update(goal)
+	}
 	addToDo(name, dueDate, dueTime, callback) {
 		if (!this._todos) {
 			callback(true, null);
 			return;
 		}
 		var todo = {
-			_id: new Date().toISOString(),
+			_id: btoa(new Date().toISOString()),
 			name: name,
 			dueDate: dueDate,
 			dueTime: dueTime,
 			done: false
 		}
-	 	console.log(todo);
 		if(!this._todos.insert(todo)) {
 			callback(true, todo._id)
 		}
