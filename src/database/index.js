@@ -82,7 +82,9 @@ class DB {
 
 	}
 	getToDo(id) {
-		return this._todos.find({_id: id})[0]
+		var found = this._todos.find({"_id": id})
+		if (found) return found[0]
+		else return null
 	}
 	updateToDo(todo) {
 		this._todos.update(todo)

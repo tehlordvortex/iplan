@@ -5,18 +5,44 @@
     </v-flex>
     <v-slide-y-transition>
       <v-flex v-show="ready && !noTodos" xs12 sm12>
-      	<v-card flat class="flat">
-              <v-card-text style="height: 100%" class="grey lighten-5">
+      	<v-card>
+              <v-card-text>
+                <v-toolbar v-show="selected.length != 0" class="white" flat absolute fixed dense style="margin-top: 3em">
+                  <v-toolbar-title>With selected:</v-toolbar-title>
+                  <v-select
+                    v-bind:items="actions"
+                    v-model="actionSelected"
+                    label="Select"
+                    single-line
+                    hide-details
+                  ></v-select>
+                  <v-btn
+                    icon
+                    flat
+                    @click.native="doTheThings"
+                  >
+                    <v-icon>apply</v-icon>
+                  </v-btn>
+                </v-toolbar>
                 <v-data-table
                   v-bind:headers="headers"
-                  :items="items"
+                  v-bind:items="items"
                   hide-actions
-                  class="elevation-1"
+                  v-model="selected"
+                  selected-key="_id"
+                  select-all
                 >
                 <template slot="items" scope="props">
+                  <td>
+                    <v-checkbox
+                      primary
+                      hide-details
+                      v-model="props.selected"
+                    ></v-checkbox>
+                  </td>
                   <td>{{ props.item.name }}</td>
-                  <td class="text-xs-right">{{ props.item.dueDate }}</td>
-                  <td class="text-xs-right">{{ props.item.dueTime }}</td>
+                  <td class="text-xs-right">{{ props.item.dueDate || "Never" }}</td>
+                  <td class="text-xs-right">{{ props.item.dueTime || "Never" }}</td>
                   <td class="text-xs-right">
                     <v-checkbox
                       primary
@@ -92,6 +118,15 @@ export default {
     },
     data() {
         return {
+            actions: [
+            {
+              text: 'Delete'
+            },
+            {
+              text: 'Make into Goal'
+            }],
+            actionSelected: "",
+            selected: [],
             ready: false,
             noTodos: false,
             headers: [
@@ -132,6 +167,17 @@ export default {
         editTodo: function (props) {
           if(this.$root.$data.debug) console.log(props)
           this.$router.push({name: 'edittodo', params: {id: props._id}})
+        },
+        doTheThings: function() {
+          console.log(this.actionSelected)
+          if (this.actionSelected && this.actionSelected.text == "Delete") {
+            for (var i = 0; i < this.selected.length; i++) {
+              var todo = this.$root.$data.database.getToDo(this.selected[i]._id)
+              console.log(todo)
+              this.$root.$data.database.deleteToDo(todo)
+            }
+            this.buildData();
+          }
         }
     }
 }
