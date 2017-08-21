@@ -169,14 +169,14 @@ export default {
           this.$router.push({name: 'edittodo', params: {id: props._id}})
         },
         doTheThings: function() {
-          console.log(this.actionSelected)
           if (this.actionSelected && this.actionSelected.text == "Delete") {
-            for (var i = 0; i < this.selected.length; i++) {
+            for (var i = 0;i < this.selected.length;i++) {
               var todo = this.$root.$data.database.getToDo(this.selected[i]._id)
-              console.log(todo)
+              if (this.$root.$data.debug) console.log(todo)
               this.$root.$data.database.deleteToDo(todo)
             }
-            this.buildData();
+            this.selected = []
+            this.buildData()
           }
         }
     }
