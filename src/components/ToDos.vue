@@ -21,7 +21,7 @@
                     flat
                     @click.native="doTheThings"
                   >
-                    <v-icon>apply</v-icon>
+                    <v-icon>done</v-icon>
                   </v-btn>
                 </v-toolbar>
                 <v-data-table
