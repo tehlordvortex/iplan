@@ -4,7 +4,7 @@
     	<v-progress-circular indeterminate class="primary--text"></v-progress-circular>
     </v-flex>
     <v-slide-y-transition>
-      <v-flex v-show="ready && !noTodos" xs12 sm12>
+      <v-flex v-show="ready && !noTodos" xs12 sm10 offset-sm1>
       	<v-card>
               <v-card-text>
                 <v-toolbar v-show="selected.length != 0" class="white" flat absolute fixed dense style="margin-top: 3em">
@@ -56,12 +56,14 @@
                     <v-btn
                       flat
                       class="xs1 sm1"
+                      icon
                       @click.native="deleteToDo(props.item)"
                     >
                       <v-icon>delete</v-icon>
                     </v-btn>
                     <v-btn
                       flat
+                      icon
                       class="xs1 sm1"
                       @click.native="editTodo(props.item)"
                     >
@@ -77,15 +79,15 @@
     <v-fab-transition>
       <v-btn
       	absolute
-          fixed
-          dark
-          fab
-          bottom
-          right
-          class="pink"
-          style="margin-bottom: 3rem"
-          v-show="ready && !noTodos"
-          @click.native="createtodo"
+        fixed
+        dark
+        fab
+        bottom
+        right
+        class="pink"
+        style="margin-bottom: 3rem"
+        v-show="ready && !noTodos && !goal && !ids"
+        @click.native="createtodo"
       >
           <v-icon>add</v-icon>
       </v-btn>
@@ -96,6 +98,7 @@
 <script>
 export default {
     name: 'todos',
+    props: ['goal', 'ids'],
     created() {
         if(this.$root.$data.database.isReady()) {
             this.noTodos = this.$root.$data.database.getTodos().count() < 1
@@ -120,10 +123,12 @@ export default {
         return {
             actions: [
             {
-              text: 'Delete'
+              text: 'Delete',
+              action: 'delete'
             },
             {
-              text: 'Make into Goal'
+              text: 'Make into Goal',
+              action: 'makegoal'
             }],
             actionSelected: "",
             selected: [],
@@ -141,6 +146,27 @@ export default {
     },
     methods: {
         buildData: function () {
+          if (this.goal) {
+            var goal = this.$root.$data.database.getGoal(goal);
+            this.ready = true
+            this.items = []
+            for (let i=0;i<goal.todos.length;i++) {
+              let todo = null
+              if (todo = this.$root.$data.database.getToDo(goal.todos[i]))
+                this.items.push(todo);
+            }  
+          }
+          else if (this.ids) {
+            this.ready = true
+            this.items = []
+            let ids = (typeof this.ids == 'string') ? this.ids.split(',') : this.ids
+            for (let i = 0;i<ids.length;i++) {
+              let todo = null;
+              if ((todo = this.$root.$data.database.getToDo(ids[i])))
+                this.items.push(todo);
+            }
+          }
+          else {
             var allTodos = this.$root.$data.database.getTodos().find({});
             if(this.$root.$data.debug) console.log(allTodos)
             if(allTodos.length == 0) {
@@ -150,9 +176,15 @@ export default {
             }
             this.ready = true
             this.items = allTodos;
+          }
         },
         createtodo: function () {
-          this.$router.push('/createtodo')
+          if (this.goal) {
+            this.$router.push({name: 'createtodo', params: {goalId: this.goal}})
+          }
+          else {
+            this.$router.push({name: 'createtodo'})
+          }
         },
         updateToDo: function(todo) {
           todo.done = !todo.done
@@ -169,7 +201,7 @@ export default {
           this.$router.push({name: 'edittodo', params: {id: props._id}})
         },
         doTheThings: function() {
-          if (this.actionSelected && this.actionSelected.text == "Delete") {
+          if (this.actionSelected && this.actionSelected.action == "delete") {
             for (var i = 0;i < this.selected.length;i++) {
               var todo = this.$root.$data.database.getToDo(this.selected[i]._id)
               if (this.$root.$data.debug) console.log(todo)
@@ -177,6 +209,14 @@ export default {
             }
             this.selected = []
             this.buildData()
+          }
+          else if(this.actionSelected && this.actionSelected.action == "makegoal") {
+            let ids = []
+            for (var i = 0;i < this.selected.length;i++) {
+              ids.push(this.selected[i]._id)
+            }
+            this.selected = []
+            this.$router.push({name: 'creategoal', params: {ids: ids}})
           }
         }
     }

@@ -41,6 +41,11 @@ class DB {
 	getGoals() {
 		return this._goals;
 	}
+	getGoal(id) {
+		var found =  this._goals.find({"_id": id});
+		if (found) return found[0];
+		return null;
+	}
 	addGoal(name, dueDate, todo_ids, callback) {
 		if(!this._goals) {
 			callback(true, null)

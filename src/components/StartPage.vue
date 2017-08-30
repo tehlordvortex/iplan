@@ -7,7 +7,7 @@
                         <v-card-title primary-title><h3 class="headline mb-0">SO BLENK</h3></v-card-title>
                         <v-card-text>You have yet to create any ToDo, Ser User.</v-card-text>
                         <v-card-actions>
-                            <v-btn flat to="/createtodo" class="blue--text">Create</v-btn>
+                            <v-btn flat to="/create/todo" class="blue--text">Create</v-btn>
                         </v-card-actions>
                     </v-card>
                 </v-flex>
