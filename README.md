@@ -24,17 +24,41 @@ Updated on every major feature. Or major bugfix. Sometimes randomly.
 
 ## Build Setup
 
+Layout:
+```
+/
+|->iplan/
+|-->[master branch]
+|->gh-pages/
+|-->[gh-pages branch]
+```
+
 ``` bash
+# setup folder layout as shown above
+mkdir iplan-root
+cd iplan-root
+mkdir iplan
+mkdir gh-pages
+git clone https://github.com/tehlordvortex/iplan.git iplan
+git clone https://github.com/tehlordvortex/iplan.git gh-pages
+cd gh-pages
+git checkout gh-pages
+git branch -d master
+
 # install dependencies
-npm install
+yarn install
 
 # serve with hot reload at localhost:8080
-npm run dev
+yarn run dev
+
+# build for gh-pages
+BUILD_GH_PAGES=1 yarn run build
+cp dist/* ../gh-pages/
 
 # build for production with minification
-npm run build
+yarn run build
 
 # build for production and view the bundle analyzer report
-npm run build --report
+yarn run build --report
 ```
 
