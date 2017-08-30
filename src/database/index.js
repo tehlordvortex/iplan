@@ -41,6 +41,9 @@ class DB {
 	getGoals() {
 		return this._goals;
 	}
+	getGoalsArray() {
+		return this._goals.find({})
+	}
 	getGoal(id) {
 		var found =  this._goals.find({"_id": id});
 		if (found) return found[0];
