@@ -98,7 +98,7 @@ import ToDos from './ToDos.vue'
 export default {
   name: 'createGoal',
   created() {
-    this.ids = this.$route.params.ids
+    this.ids = JSON.parse(JSON.stringify(this.$route.params.ids))
   },
   data() {
     return {
@@ -112,11 +112,12 @@ export default {
   },
   methods: {
     createGoal: function () {
-      if (!this.name || this.ids.length == 0) return;
-      this.$root.$data.database.addGoal(this.name, this.dueDate, this.ids, (err, id) => {
+      if (!this.name || !this.ids || this.ids.length == 0) return;
+      let that = this;
+      this.$root.$data.database.whenReady(() => this.$root.$data.database.addGoal(this.name, this.dueDate, this.ids, (err, id) => {
         if (!err)
-          this.$router.push({name: 'goal', params: {id: id}})
-      })
+          that.$router.push({name: 'goal', params: {id: id}})
+      }))
       
     },
     goBack: function () {

@@ -86,7 +86,7 @@
         right
         class="pink"
         style="margin-bottom: 3rem"
-        v-show="ready && !noTodos && !goal && !ids"
+        v-show="ready && !hideAddButton"
         @click.native="createtodo"
       >
           <v-icon>add</v-icon>
@@ -98,7 +98,7 @@
 <script>
 export default {
     name: 'todos',
-    props: ['goal', 'ids'],
+    props: ['goal', 'ids', 'hideAddButton'],
     created() {
         if(this.$root.$data.database.isReady()) {
             this.noTodos = this.$root.$data.database.getTodos().count() < 1
@@ -205,6 +205,10 @@ export default {
             for (var i = 0;i < this.selected.length;i++) {
               var todo = this.$root.$data.database.getToDo(this.selected[i]._id)
               if (this.$root.$data.debug) console.log(todo)
+              if (this.goal) {
+                this.goal.todo_ids = this.goal.todo_ids.filter((value, index) => value != todo._id)
+                this.$root.$data.database.whenReady((db) => db.updateGoal(this.goal))
+              }
               this.$root.$data.database.deleteToDo(todo)
             }
             this.selected = []

@@ -30,7 +30,8 @@ class DB {
 		return this._ready
 	}
 	whenReady(cb) {
-		this._readyCallbacks.push(cb)
+		if(this.isReady()) cb(this)
+		else this._readyCallbacks.push(cb)
 	}
 	getDB() {
 		return this._db;
