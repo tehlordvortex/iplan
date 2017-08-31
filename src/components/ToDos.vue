@@ -4,8 +4,8 @@
     	<v-progress-circular indeterminate class="primary--text"></v-progress-circular>
     </v-flex>
     <v-slide-y-transition>
-      <v-flex v-show="ready && !noTodos" xs12 sm10 offset-sm1>
-      	<v-card>
+      <v-flex v-show="ready && !noTodos" xs12>
+      	<v-card :flat="ids || goal">
               <v-card-text>
                 <v-toolbar v-show="selected.length != 0" class="white" flat absolute fixed dense style="margin-top: 3em">
                   <v-toolbar-title>With selected:</v-toolbar-title>
