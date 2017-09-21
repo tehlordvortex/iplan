@@ -83,7 +83,7 @@
                     hide-details
                     style="display:inline"
                     :input-value="item.done"
-                    @click.native="updateToDo(item) && false"
+                    @click.native.stop="updateToDo(item)"
                   >
                   </v-checkbox>
                   <v-list-tile-content>
@@ -120,7 +120,7 @@
             </v-list>
           </v-card>
           <v-card class="hidden-xs-only" :flat="ids || goal" style="padding:0px">
-            <v-list>
+            <v-list two-line>
               <template v-for="item in items">
                 <v-list-tile  v-bind:key="item.name" @click="">
                   <v-checkbox
@@ -128,7 +128,7 @@
                     hide-details
                     style="display:inline"
                     :input-value="item.done"
-                    @click.native="updateToDo(item) && false"
+                    @click.native="updateToDo(item)"
                   >
                   </v-checkbox>
                   <v-list-tile-content>
