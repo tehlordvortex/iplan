@@ -4,9 +4,12 @@
       <v-card>
         <v-card-title>
           <div class="headline">{{ goal.name }}</div>
-          <div class="subheading offset-sm1">{{ goal.dueDate }}</div>
         </v-card-title>
         <v-card-text>
+           <span v-show="goal.dueDate">
+            <v-icon>event</v-icon>
+            <span>{{ goal.dueDate }}</span>
+           </span>
           <ToDos v-bind:ids="goal.todo_ids.join(',')"></ToDos>
         </v-card-text>
       </v-card>

@@ -4,13 +4,13 @@
       <v-flex xs12 v-for="goal in goals" v-bind:key="goal.name">
         <v-card>
           <v-card-text>
-            <h6 style="overflow-wrap:break-word">{{ goal.name }}</h6>
+            <div class="headline" style="overflow-wrap:break-word">{{ goal.name }}</div>
             <span>{{ goal.dueDate ? "Due: "+goal.dueDate : "" }}</span>
             <v-spacer></v-spacer>
             <v-btn
               flat
               icon
-              style="float: right; margin-top: -2em"
+              style="z-index: 1; float: right; margin-top: -2em"
               @click.native="viewGoal(goal._id)"
             >
               <v-icon>keyboard_arrow_right</v-icon>
