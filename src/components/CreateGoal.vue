@@ -1,7 +1,7 @@
 <template>
   <v-slide-y-reverse-transition>
   	<v-layout row>
-      <v-flex xs12 sm6 offset-sm3>
+      <v-flex xs12 sm10 offset-sm1>
         <v-toolbar flat class="purple" dark>
           <v-toolbar-title>New Goal</v-toolbar-title>
         </v-toolbar>

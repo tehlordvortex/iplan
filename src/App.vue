@@ -3,11 +3,14 @@
     <v-navigation-drawer
       persistent
       light
-      disable-route-watcher
       v-model="drawer">
        <v-toolbar flat class="transparent">
         <v-list class="pa-0">
-          <v-list-tile avatar tag="ul">iPlan</v-list-tile>
+          <v-list-tile>
+            <v-list-tile-content>
+              <v-list-tile-title>iPlan</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
         </v-list>
       </v-toolbar>
       <v-divider></v-divider>
@@ -46,21 +49,22 @@ export default {
           icon: 'dashboard'
         },
         {
+          name: "Goals",
+          url: '/goals',
+          icon: 'view_agenda'
+        },
+        {
           name: "ToDos",
           url: '/todos',
-          icon: 'reorder'
+          icon: 'list'
         }
       ],
-      drawer: false
+      drawer: false,
     }
   }
 }
 </script>
 
 <style>
-
-a {
-  text-decoration: none;
-}
 
 </style>

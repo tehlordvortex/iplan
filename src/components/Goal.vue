@@ -1,9 +1,9 @@
 <template>
   <v-layout>
-    <v-flex xs12 sm8 offset-sm2>
+    <v-flex xs12 sm10 offset-sm1>
       <v-card>
         <v-card-title>
-          <div class="subheading">{{ goal.name }}</div>
+          <div class="headline">{{ goal.name }}</div>
           <div class="subheading offset-sm1">{{ goal.dueDate }}</div>
         </v-card-title>
         <v-card-text>

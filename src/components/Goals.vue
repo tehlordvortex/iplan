@@ -1,24 +1,25 @@
 <template>
-  <v-layout>
-    <v-layout row v-for="goal in goals" v-bind:key="goal.name">
-      <v-flex xs12 sm8 offset-sm2>
+  <v-container fluid>
+    <v-layout row wrap>
+      <v-flex xs12 v-for="goal in goals" v-bind:key="goal.name">
         <v-card>
-          <v-card-title>
-            <div class="subheading">{{ goal.name }}</div>
-            <div class="text-xs-right">{{ goal.dueDate }}</div>
-          </v-card-title>
-          <v-card-actions>
+          <v-card-text>
+            <h6 style="overflow-wrap:break-word">{{ goal.name }}</h6>
+            <span>{{ goal.dueDate ? "Due: "+goal.dueDate : "" }}</span>
+            <v-spacer></v-spacer>
             <v-btn
               flat
+              icon
+              style="float: right; margin-top: -2em"
               @click.native="viewGoal(goal._id)"
             >
-              <v-icon>arrow-right</v-icon>
+              <v-icon>keyboard_arrow_right</v-icon>
             </v-btn>
-          </v-card-actions>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
-  </v-layout>
+  </v-container>
 </template>
 
 <script>
