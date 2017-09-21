@@ -5,25 +5,25 @@
     </v-flex>
     <v-slide-y-transition>
       <v-flex v-show="ready && !noTodos" xs12>
+        <v-toolbar v-show="selected.length != 0" class="white" flat absolute fixed dense style="margin-top: 3em">
+          <v-toolbar-title>With selected:</v-toolbar-title>
+          <v-select
+            v-bind:items="actions"
+            v-model="actionSelected"
+            label="Select"
+            single-line
+            hide-details
+          ></v-select>
+          <v-btn
+            icon
+            flat
+            @click.native="doTheThings"
+          >
+            <v-icon>done</v-icon>
+          </v-btn>
+        </v-toolbar>
       	<v-card class="hidden-sm-and-down" :flat="ids || goal">
               <v-card-text>
-                <v-toolbar v-show="selected.length != 0" class="white" flat absolute fixed dense style="margin-top: 3em">
-                  <v-toolbar-title>With selected:</v-toolbar-title>
-                  <v-select
-                    v-bind:items="actions"
-                    v-model="actionSelected"
-                    label="Select"
-                    single-line
-                    hide-details
-                  ></v-select>
-                  <v-btn
-                    icon
-                    flat
-                    @click.native="doTheThings"
-                  >
-                    <v-icon>done</v-icon>
-                  </v-btn>
-                </v-toolbar>
                 <v-data-table
                   v-bind:headers="headers"
                   v-bind:items="items"
@@ -76,28 +76,34 @@
           </v-card>
           <v-card class="hidden-sm-only" :flat="ids || goal" style="padding:0px">
             <v-list>
-              <v-list-group v-for="item in items" :value="actives[item.name]" v-bind:key="item.name">
-                <v-list-tile slot="item" @click="">
-                  <v-checkbox
-                    primary
-                    hide-details
-                    style="display:inline"
-                    :input-value="item.done"
-                    @click.native.stop="updateToDo(item)"
-                  >
-                  </v-checkbox>
-                  <v-list-tile-content>
+              <v-list-group 
+                v-for="item in items"
+                :value="actives[item.name]"
+                v-bind:key="item.name"
+                >
+                <v-touch v-on:pressup="select(item)"  slot="item">
+                  <v-list-tile>
+                    <v-checkbox
+                      primary
+                      hide-details
+                      style="display:inline"
+                      :input-value="item.done"
+                      @click.native.stop="updateToDo(item)"
+                    >
+                    </v-checkbox>
+                    <v-list-tile-content>
+                      
+                      <v-list-tile-title v-html="item.name"></v-list-tile-title>
+                      <v-list-tile-sub-title>
+                        <v-icon v-show="item.dueDate">event</v-icon>
+                        <span v-show="item.dueDate">{{ item.dueDate }}</span>
+                        <v-icon v-show="item.dueTime">alarm</v-icon>
+                        <span v-show="item.dueTime">{{ item.dueTime }}</span>
+                      </v-list-tile-sub-title>
+                    </v-list-tile-content>
                     
-                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
-                    <v-list-tile-sub-title>
-                      <v-icon v-show="item.dueDate">event</v-icon>
-                      <span v-show="item.dueDate">{{ item.dueDate }}</span>
-                      <v-icon v-show="item.dueTime">alarm</v-icon>
-                      <span v-show="item.dueTime">{{ item.dueTime }}</span>
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                  
-                </v-list-tile>
+                  </v-list-tile>
+                </v-touch>
                 <v-list-tile style="padding:0px;margin-left:-3em" @click="">
                       <v-btn
                         flat
@@ -122,42 +128,44 @@
           <v-card class="hidden-xs-only" :flat="ids || goal" style="padding:0px">
             <v-list two-line>
               <template v-for="item in items">
-                <v-list-tile  v-bind:key="item.name" @click="">
-                  <v-checkbox
-                    primary
-                    hide-details
-                    style="display:inline"
-                    :input-value="item.done"
-                    @click.native="updateToDo(item)"
-                  >
-                  </v-checkbox>
-                  <v-list-tile-content>
-                    
-                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
-                    <v-list-tile-sub-title>
-                      <v-icon v-show="item.dueDate">event</v-icon>
-                      <span v-show="item.dueDate">{{ item.dueDate }}</span>
-                      <v-icon v-show="item.dueTime">alarm</v-icon>
-                      <span v-show="item.dueTime">{{ item.dueTime }}</span>
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                    <v-btn
-                        flat
-                        class="xs1 sm1"
-                        icon
-                        @click.native="deleteToDo(item)"
-                      >
-                        <v-icon>delete</v-icon>
-                      </v-btn>
+                <v-touch v-on:pressup="select(item)" v-bind:key="item.name">
+                  <v-list-tile @click="">
+                    <v-checkbox
+                      primary
+                      hide-details
+                      style="display:inline"
+                      :input-value="item.done"
+                      @click.native="updateToDo(item)"
+                    >
+                    </v-checkbox>
+                    <v-list-tile-content>
+                      
+                      <v-list-tile-title v-html="item.name"></v-list-tile-title>
+                      <v-list-tile-sub-title>
+                        <v-icon v-show="item.dueDate">event</v-icon>
+                        <span v-show="item.dueDate">{{ item.dueDate }}</span>
+                        <v-icon v-show="item.dueTime">alarm</v-icon>
+                        <span v-show="item.dueTime">{{ item.dueTime }}</span>
+                      </v-list-tile-sub-title>
+                    </v-list-tile-content>
                       <v-btn
-                        flat
-                        icon
-                        class="xs1 sm1"
-                        @click.native="editTodo(item)"
-                      >
-                        <v-icon>create</v-icon>
-                      </v-btn>
-                </v-list-tile>
+                          flat
+                          class="xs1 sm1"
+                          icon
+                          @click.native="deleteToDo(item)"
+                        >
+                          <v-icon>delete</v-icon>
+                        </v-btn>
+                        <v-btn
+                          flat
+                          icon
+                          class="xs1 sm1"
+                          @click.native="editTodo(item)"
+                        >
+                          <v-icon>create</v-icon>
+                        </v-btn>
+                  </v-list-tile>
+                </v-touch>
               </template>
             </v-list>
           </v-card>
@@ -317,6 +325,10 @@ export default {
             this.selected = []
             this.$router.push({name: 'creategoal', params: {ids: ids}})
           }
+        },
+        select: function(item) {
+          this.selected.push(item)
+          if (this.$root.$data.debug) console.log("selected: " + item)
         }
     }
 }
