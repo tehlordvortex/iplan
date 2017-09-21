@@ -5,7 +5,7 @@
     </v-flex>
     <v-slide-y-transition>
       <v-flex v-show="ready && !noTodos" xs12>
-      	<v-card :flat="ids || goal">
+      	<v-card class="hidden-xs-only" :flat="ids || goal">
               <v-card-text>
                 <v-toolbar v-show="selected.length != 0" class="white" flat absolute fixed dense style="margin-top: 3em">
                   <v-toolbar-title>With selected:</v-toolbar-title>
@@ -73,6 +73,50 @@
                 </template>
               </v-data-table>
             </v-card-text>
+          </v-card>
+          <v-card class="hidden-sm-and-up" :flat="ids || goal" style="padding:0px">
+            <v-list>
+              <v-list-group v-for="item in items" :value="actives[item.name]" v-bind:key="item.name">
+                <v-list-tile slot="item">
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
+                    <v-list-tile-sub-title>
+                      <v-icon v-show="item.dueDate">event</v-icon>
+                      <span v-show="item.dueDate">{{ item.dueDate }}</span>
+                      <v-icon v-show="item.dueTime">alarm</v-icon>
+                      <span v-show="item.dueTime">{{ item.dueTime }}</span>
+                    </v-list-tile-sub-title>
+                  </v-list-tile-content>
+                  <v-checkbox
+                    primary
+                    hide-details
+                    :input-value="item.done"
+                    @click.native="updateToDo(item)"
+                  >
+                  </v-checkbox>
+                </v-list-tile>
+                <v-list-tile>
+                    <v-list-tile-title>
+                      <v-btn
+                        flat
+                        class="xs1 sm1"
+                        icon
+                        @click.native="deleteToDo(item)"
+                      >
+                        <v-icon>delete</v-icon>
+                      </v-btn>
+                      <v-btn
+                        flat
+                        icon
+                        class="xs1 sm1"
+                        @click.native="editTodo(item)"
+                      >
+                        <v-icon>create</v-icon>
+                      </v-btn>
+                    </v-list-tile-title>
+                </v-list-tile>
+              </v-list-group>
+            </v-list>
           </v-card>
       </v-flex>
     </v-slide-y-transition>
@@ -150,20 +194,24 @@ export default {
             var goal = this.$root.$data.database.getGoal(goal);
             this.ready = true
             this.items = []
+            this.actives = {}
             for (let i=0;i<goal.todos.length;i++) {
               let todo = null
               if (todo = this.$root.$data.database.getToDo(goal.todos[i]))
                 this.items.push(todo);
+                this.actives[todo.name] = false
             }  
           }
           else if (this.ids) {
             this.ready = true
             this.items = []
+            this.actives = {}
             let ids = (typeof this.ids == 'string') ? this.ids.split(',') : this.ids
             for (let i = 0;i<ids.length;i++) {
               let todo = null;
               if ((todo = this.$root.$data.database.getToDo(ids[i])))
                 this.items.push(todo);
+                this.actives[todo.name] = false
             }
           }
           else {
@@ -175,7 +223,11 @@ export default {
               return
             }
             this.ready = true
+            this.actives = {}
             this.items = allTodos;
+            for(let i=0;i<this.items.length;i++) {
+              this.actives[this.items[i].name] = false
+            }
           }
         },
         createtodo: function () {
