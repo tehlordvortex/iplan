@@ -25,21 +25,6 @@
               </v-list-tile>
             </template>
           </v-list>
-          <!--
-          <v-card-text>
-            <div class="headline" style="overflow-wrap:break-word">{{ goal.name }}</div>
-            <span>{{ goal.dueDate ? "Due: "+goal.dueDate : "" }}</span>
-            <v-spacer></v-spacer>
-            <v-btn
-              flat
-              icon
-              style="z-index: 1; float: right; margin-top: -2em"
-              @click.native="viewGoal(goal._id)"
-            >
-              <v-icon>keyboard_arrow_right</v-icon>
-            </v-btn>
-          </v-card-text>
-          -->
         </v-card>
       </v-flex>
     </v-layout>

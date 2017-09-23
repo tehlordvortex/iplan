@@ -247,7 +247,7 @@ export default {
             this.ready = true
             this.items = []
             this.actives = {}
-            for (let i=0;i<goal.todos.length;i++) {
+            for (let i=0;i<goal.todo_ids.length;i++) {
               let todo = null
               if (todo = this.$root.$data.database.getToDo(goal.todos[i]))
                 this.items.push(todo)
@@ -298,6 +298,10 @@ export default {
         },
         deleteToDo: function (todo) {
           if(this.$root.$data.debug) console.log(todo)
+          if(this.goal) {
+            this.goal.todo_ids = this.goal.todo_ids.filter((id) => id != todo._id)
+            this.$root.$data.database.updateGoal(this.goal)
+          }
           this.$root.$data.database.deleteToDo(todo)
           this.buildData()
         },
