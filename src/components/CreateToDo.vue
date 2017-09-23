@@ -172,13 +172,21 @@ export default {
     createToDo: function () {
       if (!this.name) return;
       if (this.$root.$data.debug) console.log(this.name, this.dueDate, this.dueTime);
-      if (this.$root.$data.database.isReady()) {
-        this.$root.$data.database.addToDo(this.name, this.dueDate, this.dueTime, (err, id) => console.log(err, id))
-        this.$router.push('/')
-      }
-      else this.$root.$data.database.whenReady(() => {
-        this.$root.$data.database.addToDo(this.name, this.dueDate, this.dueTime, (err, id) => console.log(err, id))
-        this.$router.push('/')
+      this.$root.$data.database.whenReady(() => {
+        this.$root.$data.database.addToDo(this.name, this.dueDate, this.dueTime, (err, id) => {
+          if(this.$root.$data.debug) console.log(this.$route.params.goalId)
+          if (this.$route.params.goalId) {
+            goal = null
+            goal = this.$root.$data.database.getGoal(this.$route.params.goalId)
+            console.log("Goal: " + goal)
+            goal.todo_ids.push(id)
+            this.$root.$data.database.updateGoal(goal)
+            this.$router.push({name: 'goal', params: {id: this.$route.params.goalId}})
+          }
+          else {
+            this.$router.push({name: 'todos'})
+          }
+        })
       })
     },
     goBack: function () {

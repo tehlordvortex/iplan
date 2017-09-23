@@ -10,7 +10,7 @@
             <v-icon>event</v-icon>
             <span>{{ goal.dueDate }}</span>
            </span>
-          <ToDos v-bind:ids="goal.todo_ids.join(',')"></ToDos>
+          <ToDos v-bind:goal="goal"></ToDos>
         </v-card-text>
       </v-card>
     </v-flex>

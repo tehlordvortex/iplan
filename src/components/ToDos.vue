@@ -243,15 +243,16 @@ export default {
     methods: {
         buildData: function () {
           if (this.goal) {
-            var goal = this.$root.$data.database.getGoal(goal);
+            //var goal = this.$root.$data.database.getGoal(goal);
             this.ready = true
             this.items = []
             this.actives = {}
-            for (let i=0;i<goal.todo_ids.length;i++) {
+            for (let i=0;i<this.goal.todo_ids.length;i++) {
               let todo = null
-              if (todo = this.$root.$data.database.getToDo(goal.todos[i]))
+              if (todo = this.$root.$data.database.getToDo(this.goal.todo_ids[i])) {
                 this.items.push(todo)
                 this.actives[todo.name] = false
+              }
             }  
           }
           else if (this.ids) {
@@ -285,7 +286,7 @@ export default {
         },
         createtodo: function () {
           if (this.goal) {
-            this.$router.push({name: 'createtodo', params: {goalId: this.goal}})
+            this.$router.push({name: 'createtodo', params: {goalId: this.goal._id}})
           }
           else {
             this.$router.push({name: 'createtodo'})
