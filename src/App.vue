@@ -1,7 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
-      persistent
+      temporary
       light
       v-model="drawer">
        <v-toolbar flat class="transparent">

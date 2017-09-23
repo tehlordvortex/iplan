@@ -74,14 +74,15 @@
               </v-data-table>
             </v-card-text>
           </v-card>
-          <v-card class="hidden-sm-only" :flat="ids || goal" style="padding:0px">
+          <v-card class="hidden-sm-and-up" :flat="ids || goal" style="padding:0px">
             <v-list>
               <v-list-group 
                 v-for="item in items"
                 :value="actives[item.name]"
                 v-bind:key="item.name"
+                @contextmenu.stop.prevent=""
                 >
-                <v-touch v-on:pressup="select(item)"  slot="item">
+                <v-touch v-on:press="select(item)"  slot="item">
                   <v-list-tile>
                     <v-checkbox
                       primary
@@ -104,7 +105,7 @@
                     
                   </v-list-tile>
                 </v-touch>
-                <v-list-tile style="padding:0px;margin-left:-3em" @click="">
+                <v-list-tile @click="">
                       <v-btn
                         flat
                         class="xs1 sm1"
@@ -125,11 +126,11 @@
               </v-list-group>
             </v-list>
           </v-card>
-          <v-card class="hidden-xs-only" :flat="ids || goal" style="padding:0px">
+          <v-card class="hidden-xs-only hidden-md-and-up" :flat="ids || goal" style="padding:0px">
             <v-list two-line>
               <template v-for="item in items">
-                <v-touch v-on:pressup="select(item)" v-bind:key="item.name">
-                  <v-list-tile @click="">
+                <v-touch v-on:press="select(item)" v-bind:key="item.name">
+                  <v-list-tile :id="item._id" @contextmenu.stop.prevent="">
                     <v-checkbox
                       primary
                       hide-details
@@ -249,7 +250,7 @@ export default {
             for (let i=0;i<goal.todos.length;i++) {
               let todo = null
               if (todo = this.$root.$data.database.getToDo(goal.todos[i]))
-                this.items.push(todo);
+                this.items.push(todo)
                 this.actives[todo.name] = false
             }  
           }
@@ -260,9 +261,10 @@ export default {
             let ids = (typeof this.ids == 'string') ? this.ids.split(',') : this.ids
             for (let i = 0;i<ids.length;i++) {
               let todo = null;
-              if ((todo = this.$root.$data.database.getToDo(ids[i])))
-                this.items.push(todo);
+              if (todo = this.$root.$data.database.getToDo(ids[i])) {
+                this.items.push(todo)
                 this.actives[todo.name] = false
+              }
             }
           }
           else {
@@ -326,9 +328,15 @@ export default {
             this.$router.push({name: 'creategoal', params: {ids: ids}})
           }
         },
-        select: function(item) {
-          this.selected.push(item)
-          if (this.$root.$data.debug) console.log("selected: " + item)
+        select: function(item, e) {
+          if(this.selected.indexOf(item) >= 0) {
+            this.selected = this.selected.filter((a) => a != item)
+            if (this.$root.$data.debug) console.log("de-selected: " + item)
+          }
+          else {
+            this.selected.push(item)
+            if (this.$root.$data.debug) console.log("selected: " + item)
+          }
         }
     }
 }
