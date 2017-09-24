@@ -66,7 +66,7 @@
                 @contextmenu.stop.prevent=""
                 >
                 <v-touch v-on:press="select(item)"  slot="item">
-                  <v-list-tile>
+                  <v-list-tile :id="item._id">
                     <v-checkbox
                       primary
                       hide-details
@@ -113,7 +113,7 @@
             <v-list two-line>
               <template v-for="item in items">
                 <v-touch v-on:press="select(item)" v-bind:key="item.name">
-                  <v-list-tile :id="item._id" :class="className[item._id]" @contextmenu.stop.prevent="">
+                  <v-list-tile :id="item._id" @contextmenu.stop.prevent="">
                     <v-checkbox
                       primary
                       hide-details
@@ -235,7 +235,6 @@ export default {
     methods: {
         buildData: function () {
           if (this.goal) {
-            //var goal = this.$root.$data.database.getGoal(goal);
             this.ready = true
             this.items = []
             this.actives = {}
@@ -329,14 +328,12 @@ export default {
         select: function(item, e) {
           if (this.$root.$data.debug) console.log(document.getElementById(item._id))
           if(this.$root.$data.selected.indexOf(item) >= 0) {
-            //document.getElementById(item._id).classList.remove("dark")
-            this.className[item._id] = ""
+            document.getElementById(item._id).classList.remove("grey")
             this.$root.$data.selected = this.$root.$data.selected.filter((a) => a != item)
             if (this.$root.$data.debug) console.log("de-selected: " + item)
           }
           else {
-            //document.getElementById(item._id).classList.add("dark")
-            this.className[item._id] = "dark"
+            document.getElementById(item._id).classList.add("grey")
             this.$root.$data.selected.push(item)
             if (this.$root.$data.debug) console.log("selected: " + item)
           }
