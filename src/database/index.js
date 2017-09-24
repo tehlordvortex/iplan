@@ -70,6 +70,9 @@ class DB {
 	updateGoal(goal) {
 		this._goals.update(goal)
 	}
+	deleteGoal(goal) {
+		this._goals.remove(goal)
+	}
 	addToDo(name, dueDate, dueTime, callback) {
 		if (!this._todos) {
 			callback(true, null);

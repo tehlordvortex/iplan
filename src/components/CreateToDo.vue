@@ -171,14 +171,14 @@ export default {
   methods: {
     createToDo: function () {
       if (!this.name) return;
+      //var that = this
       if (this.$root.$data.debug) console.log(this.name, this.dueDate, this.dueTime);
       this.$root.$data.database.whenReady(() => {
         this.$root.$data.database.addToDo(this.name, this.dueDate, this.dueTime, (err, id) => {
           if(this.$root.$data.debug) console.log(this.$route.params.goalId)
           if (this.$route.params.goalId) {
-            goal = null
-            goal = this.$root.$data.database.getGoal(this.$route.params.goalId)
-            console.log("Goal: " + goal)
+            var goal = this.$root.$data.database.getGoal(this.$route.params.goalId)
+            if(this.$root.$data.debug) console.log("Goal: " + goal)
             goal.todo_ids.push(id)
             this.$root.$data.database.updateGoal(goal)
             this.$router.push({name: 'goal', params: {id: this.$route.params.goalId}})

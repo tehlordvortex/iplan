@@ -28,6 +28,12 @@
     <v-toolbar fixed class="blue" id="main-toolbar" dark dense>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>iPlan</v-toolbar-title>
+      <v-spacer></v-spacer>
+      <template v-for="action in $root.$data.actions">
+        <v-btn icon :key="action.action" v-show="$root.$data.selected.length > 0" @click="($root.$data.handler) ? $root.$data.handler(action) : console.log('No defined handler')">
+          <v-icon>{{action.icon}}</v-icon>
+        </v-btn>
+      </template>
     </v-toolbar>
     <main>
       <v-container fluid>

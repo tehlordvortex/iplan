@@ -5,7 +5,7 @@
         <v-card>
           <v-list two-line>
             <template v-for="goal in goals">
-              <v-list-tile @click.native="viewGoal(goal._id)" v-bind:key="goal.name">
+              <v-list-tile v-bind:key="goal.name">
                 <v-list-tile-content>
                   <v-list-tile-title v-html="goal.name"></v-list-tile-title>
                   <v-list-tile-sub-title v-show="goal.dueDate">
@@ -13,15 +13,22 @@
                     <span>{{ goal.dueDate }}</span>
                   </v-list-tile-sub-title>
                 </v-list-tile-content>
-                <v-list-tile-action>
-                   <v-btn
+                <!--<v-list-tile-action>-->
+                  <v-btn
+                    flat
+                    icon
+                    @click.native="deleteGoal(goal)"
+                  >
+                    <v-icon>delete</v-icon>
+                  </v-btn>
+                  <v-btn
                     flat
                     icon
                     @click.native="viewGoal(goal._id)"
                   >
                     <v-icon>keyboard_arrow_right</v-icon>
                   </v-btn>
-                </v-list-tile-action>
+                <!--</v-list-tile-action>-->
               </v-list-tile>
             </template>
           </v-list>
@@ -47,6 +54,10 @@ export default {
   methods: {
     viewGoal(id) {
       this.$router.push({name: 'goal', params: {id: id}})
+    },
+    deleteGoal(goal) {
+      this.goals = this.goals.filter((g) => g != goal)
+      this.$root.$data.database.deleteGoal(goal)
     }
   },
   components: {

@@ -20,7 +20,10 @@ window.vueApp = new Vue({
   template: '<App/>',
   components: { App },
   data: {
-  	database: database,
+    database: database,
+    selected: [],
+    actions: [],
+    handler: null,
   	debug: true
   }
 })

@@ -5,30 +5,13 @@
     </v-flex>
     <v-slide-y-transition>
       <v-flex v-show="ready && !noTodos" xs12>
-        <v-toolbar v-show="selected.length != 0" class="white" flat absolute fixed dense style="margin-top: 3em">
-          <v-toolbar-title>With selected:</v-toolbar-title>
-          <v-select
-            v-bind:items="actions"
-            v-model="actionSelected"
-            label="Select"
-            single-line
-            hide-details
-          ></v-select>
-          <v-btn
-            icon
-            flat
-            @click.native="doTheThings"
-          >
-            <v-icon>done</v-icon>
-          </v-btn>
-        </v-toolbar>
       	<v-card class="hidden-sm-and-down" :flat="ids || goal">
               <v-card-text>
                 <v-data-table
                   v-bind:headers="headers"
                   v-bind:items="items"
                   hide-actions
-                  v-model="selected"
+                  v-model="$root.$data.selected"
                   selected-key="_id"
                   select-all
                 >
@@ -130,7 +113,7 @@
             <v-list two-line>
               <template v-for="item in items">
                 <v-touch v-on:press="select(item)" v-bind:key="item.name">
-                  <v-list-tile :id="item._id" @contextmenu.stop.prevent="">
+                  <v-list-tile :id="item._id" :class="className[item._id]" @contextmenu.stop.prevent="">
                     <v-checkbox
                       primary
                       hide-details
@@ -214,20 +197,29 @@ export default {
             }
             this.buildData()
         })
+        this.$root.$data.selected = this.selected
+        this.$root.$data.actions = this.actions
+        this.$root.$data.handler = (action) => {
+          this.actionSelected = action
+          this.doTheThings()
+        }
     },
     data() {
         return {
             actions: [
             {
               text: 'Delete',
-              action: 'delete'
+              action: 'delete',
+              icon: 'delete'
             },
             {
               text: 'Make into Goal',
-              action: 'makegoal'
+              action: 'makegoal',
+              icon: 'done_all'
             }],
             actionSelected: "",
             selected: [],
+            className: {},
             ready: false,
             noTodos: false,
             headers: [
@@ -311,9 +303,10 @@ export default {
           this.$router.push({name: 'edittodo', params: {id: props._id}})
         },
         doTheThings: function() {
+          if(this.$root.$data.debug) console.log(this.actionSelected, this.selected)
           if (this.actionSelected && this.actionSelected.action == "delete") {
-            for (var i = 0;i < this.selected.length;i++) {
-              var todo = this.$root.$data.database.getToDo(this.selected[i]._id)
+            for (var i = 0;i < this.$root.$data.selected.length;i++) {
+              var todo = this.$root.$data.selected[i]
               if (this.$root.$data.debug) console.log(todo)
               if (this.goal) {
                 this.goal.todo_ids = this.goal.todo_ids.filter((value, index) => value != todo._id)
@@ -321,25 +314,30 @@ export default {
               }
               this.$root.$data.database.deleteToDo(todo)
             }
-            this.selected = []
+            this.$root.$data.selected = []
             this.buildData()
           }
           else if(this.actionSelected && this.actionSelected.action == "makegoal") {
             let ids = []
-            for (var i = 0;i < this.selected.length;i++) {
-              ids.push(this.selected[i]._id)
+            for (var i = 0;i < this.$root.$data.selected.length;i++) {
+              ids.push(this.$root.$data.selected[i]._id)
             }
-            this.selected = []
+            this.$root.$data.selected = []
             this.$router.push({name: 'creategoal', params: {ids: ids}})
           }
         },
         select: function(item, e) {
-          if(this.selected.indexOf(item) >= 0) {
-            this.selected = this.selected.filter((a) => a != item)
+          if (this.$root.$data.debug) console.log(document.getElementById(item._id))
+          if(this.$root.$data.selected.indexOf(item) >= 0) {
+            //document.getElementById(item._id).classList.remove("dark")
+            this.className[item._id] = ""
+            this.$root.$data.selected = this.$root.$data.selected.filter((a) => a != item)
             if (this.$root.$data.debug) console.log("de-selected: " + item)
           }
           else {
-            this.selected.push(item)
+            //document.getElementById(item._id).classList.add("dark")
+            this.className[item._id] = "dark"
+            this.$root.$data.selected.push(item)
             if (this.$root.$data.debug) console.log("selected: " + item)
           }
         }

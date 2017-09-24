@@ -81,7 +81,7 @@
                 </v-flex>
               </v-layout>
             </form>
-            <ToDos :ids="ids"></ToDos>
+            <ToDos :ids="ids" :hideAddButton="true"></ToDos>
           </v-card-text>
           <v-card-actions>
             <v-btn class="blue--text" @click.native.stop="createGoal" primary flat>Create</v-btn>
