@@ -197,12 +197,6 @@ export default {
           }
           this.buildData()
       })
-      this.$root.$data.selected = this.selected
-      this.$root.$data.actions = this.actions
-      this.$root.$data.handler = (action) => {
-        this.actionSelected = action
-        this.doTheThings()
-      }
     },
     data() {
       return {
@@ -212,11 +206,7 @@ export default {
             action: 'delete',
             icon: 'delete'
           },
-          {
-            text: 'Make into Goal',
-            action: 'makegoal',
-            icon: 'done_all'
-          }],
+          ],
           actionSelected: "",
           selected: [],
           className: {},
@@ -273,6 +263,17 @@ export default {
           for(let i=0;i<this.items.length;i++) {
             this.actives[this.items[i].name] = false
           }
+          this.actions.push({
+            text: 'Make into Goal',
+            action: 'makegoal',
+            icon: 'done_all'
+          })
+        }
+        this.$root.$data.selected = this.selected
+        this.$root.$data.actions = this.actions
+        this.$root.$data.handler = (action) => {
+          this.actionSelected = action
+          this.doTheThings()
         }
       },
       createtodo: function () {
