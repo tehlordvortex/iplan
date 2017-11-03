@@ -10,6 +10,19 @@
             <form>
             <v-layout row>
               <v-flex xs12>
+                <v-alert
+                  color="info"
+                  icon="warning"
+                  v-model="showError"
+                  dismissible
+                  class="red"
+                >
+                  {{ errorMessage }}
+                </v-alert>
+              </v-flex>
+            </v-layout>
+            <v-layout row>
+              <v-flex xs12>
                 <v-text-field
                   label="Name"
                   v-model="name"
@@ -165,12 +178,23 @@ export default {
       menuTime: false,
       menu: false,
       modalTime: false,
-      modal: false
+      modal: false,
+      showError: false,
+      errorMessage: ""
     }
   },
   methods: {
     createToDo: function () {
-      if (!this.name) return;
+      if (!this.name) {
+        this.showError = true
+        this.errorMessage = "Name is required!"
+        return
+      }
+      if (this.dueTime && !this.dueDate) {
+        this.showError = true
+        this.errorMessage = "A due date must be specified if a due time is specified!"
+        return
+      }
       //var that = this
       if (this.$root.$data.debug) console.log(this.name, this.dueDate, this.dueTime);
       this.$root.$data.database.whenReady(() => {
