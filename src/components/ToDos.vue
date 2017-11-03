@@ -178,6 +178,7 @@ export default {
     name: 'todos',
     props: ['goal', 'ids', 'hideAddButton'],
     created() {
+      if (this.$root.$data.debug) console.log('created ToDos component')
       this.$root.$data.database.whenReady(() => {
           this.noTodos = this.$root.$data.database.getTodos().count() < 1
           if (this.noTodos) {
@@ -187,7 +188,8 @@ export default {
           }
 
           // makegoal action should not be available when viewing a goal/specific set of ids
-          if (!(this.ids && this.goal))
+          if (this.$root.$data.debug) console.log("ids or goals not specified", !(this.ids || this.goal))
+          if (!(this.ids || this.goal))
             this.actions.push({
               text: 'Make into Goal',
               action: 'makegoal',
@@ -202,8 +204,9 @@ export default {
       })
     },
     beforeDestroy() {
+      if (this.$root.$data.debug) console.log('destroyed ToDos component')
       this.$root.$data.showActions = false
-      this.$root.$data.actions = []
+      //this.$root.$data.actions = []
       this.$root.$data.handler = null
     },
     data() {
