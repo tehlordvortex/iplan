@@ -10,7 +10,7 @@
             <v-icon>event</v-icon>
             <span>{{ goal.dueDate }}</span>
            </span>
-          <ToDos v-bind:goal="goal"></ToDos>
+          <ToDos v-bind:goal="goal" />
         </v-card-text>
       </v-card>
       <v-card v-if="this.notFound">
