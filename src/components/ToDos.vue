@@ -263,6 +263,7 @@ export default {
           for(let i=0;i<this.items.length;i++) {
             this.actives[this.items[i].name] = false
           }
+          // makegoal action should not be available when viewing a goal/specific set of ids
           this.actions.push({
             text: 'Make into Goal',
             action: 'makegoal',
@@ -308,6 +309,8 @@ export default {
           for (var i = 0;i < this.$root.$data.selected.length;i++) {
             var todo = this.$root.$data.selected[i]
             if (this.$root.$data.debug) console.log(todo)
+            // if we're attached to a goal, remove the todo(s) from the goal
+            // TODO: remove todos attached to a goal even when not called from Goal.vue
             if (this.goal) {
               this.goal.todo_ids = this.goal.todo_ids.filter((value, index) => value != todo._id)
               this.$root.$data.database.whenReady((db) => db.updateGoal(this.goal))
