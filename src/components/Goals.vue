@@ -2,7 +2,8 @@
   <v-container fluid>
     <v-layout row wrap>
       <v-flex xs12>
-        <v-card>
+        <!-- if there are specific ids being displayed, then flatten the card to fit into the UI -->
+        <v-card :flat="!!ids">
           <v-list two-line>
             <template v-for="goal in goals">
               <v-list-tile v-bind:key="goal.name">
@@ -42,9 +43,15 @@
 import ToDos from './ToDos'
 export default {
   name: 'goals',
+  props: ['ids'],
   created() {
-    this.$root.$data.database.whenReady(() => 
-    this.goals = this.$root.$data.database.getGoalsArray())
+    if(!this.ids)
+      this.$root.$data.database.whenReady(() => 
+        this.goals = this.$root.$data.database.getGoalsArray())
+    else {
+      this.goals = []
+      this.ids.split(",").forEach((id) => this.goals.push(this.$root.$data.database.getGoal(id)))
+    }
   },
   data() {
     return {
