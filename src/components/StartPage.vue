@@ -18,8 +18,8 @@
       </v-layout>
       <v-container fluid grid-list-xl>
         <v-layout row>
-          <v-flex>
-            <v-card v-if="!noTodos && ready" class="primary white">
+          <v-flex xs12>
+            <v-card v-if="!noTodos && ready"class="primary white">
               <v-card-title primary-title><h3 class="headline mb-0">Upcoming ToDos</h3></v-card-title>
               <v-card-text>
                 <ToDos v-if="upcomingTodos != ''" :ids="upcomingTodos" :hideAddButton="true"></ToDos>
@@ -33,7 +33,7 @@
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex>
+          <v-flex xs12>
             <v-card v-if="!noGoals && ready" class="primary white">
               <v-card-title primary-title><h3 class="headline mb-0">Upcoming Goals</h3></v-card-title>
               <v-card-text>
@@ -42,7 +42,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn flat to="/goals" class="blue--text">View All</v-btn>
-                <v-btn flat to="/create/goal" class="pink--text">Create One</v-btn>
+                <v-btn flat to="/todos" class="pink--text">Create One</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
