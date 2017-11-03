@@ -1,10 +1,11 @@
 # iplan
 
+![screenshot](https://i.imgur.com/CccfdC4.png "screenshot")
 > An extraordinary ToDo app
 
 ## Planned features
 
-* Group ToDos together to form a "Goal"
+* ~~Group ToDos together to form a "Goal"~~
 * Group Goals together to form a "Plan"
 * Sync to Dropbox and GDrive
 * Progressive Web App
@@ -44,6 +45,7 @@ git clone https://github.com/tehlordvortex/iplan.git gh-pages
 cd gh-pages
 git checkout gh-pages
 git branch -d master
+cd ../iplan
 
 # install dependencies
 yarn install
@@ -53,7 +55,8 @@ yarn run dev
 
 # build for gh-pages
 BUILD_GH_PAGES=1 yarn run build
-cp dist/* ../gh-pages/
+rm -rf ../gh-pages/index.html ../gh-pages/static
+cp -r dist/* ../gh-pages/
 
 # build for production with minification
 yarn run build
