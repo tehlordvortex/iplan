@@ -5,7 +5,7 @@
     </v-flex>
     <v-slide-y-transition>
       <v-flex v-show="ready && !noTodos" xs12>
-      	<v-card class="hidden-sm-and-down" :flat="!!(ids || goal)">
+      	<!--<v-card class="hidden-sm-and-down" :flat="!!(ids || goal)">
           <v-card-text>
             <v-data-table
               v-bind:headers="headers"
@@ -56,17 +56,16 @@
             </template>
           </v-data-table>
         </v-card-text>
-        </v-card>
+        </v-card>-->
         <v-card class="hidden-sm-and-up" :flat="!!(ids || goal)" style="padding:0px">
           <v-list>
             <v-list-group 
               v-for="item in items"
               :value="actives[item.name]"
               v-bind:key="item.name"
-              @contextmenu.stop.prevent=""
               >
-              <v-touch v-on:press="select(item)"  slot="item">
-                <v-list-tile :name="item._id">
+              <!--<v-touch v-on:press="select(item)"  slot="item">-->
+                <v-list-tile :name="item._id" slot="item" @contextmenu.stop.prevent="select(item)">
                   <v-checkbox
                     primary
                     hide-details
@@ -109,11 +108,11 @@
             </v-list-group>
           </v-list>
         </v-card>
-        <v-card class="hidden-xs-only hidden-md-and-up" :flat="!!(ids || goal)" style="padding:0px">
+        <v-card class="hidden-xs-only" :flat="!!(ids || goal)" style="padding:0px">
           <v-list two-line>
             <template v-for="item in items">
-              <v-touch v-on:press="select(item)" v-bind:key="item.name">
-                <v-list-tile :name="item._id" @contextmenu.stop.prevent="">
+              <!--<v-touch v-on:press="select(item)" v-bind:key="item.name">-->
+                <v-list-tile :name="item._id" @contextmenu.stop.prevent="select(item)">
                   <v-checkbox
                     primary
                     hide-details
@@ -149,7 +148,7 @@
                         <v-icon>create</v-icon>
                       </v-btn>
                 </v-list-tile>
-              </v-touch>
+              <!--</v-touch>-->
             </template>
           </v-list>
         </v-card>
