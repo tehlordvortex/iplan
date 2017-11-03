@@ -64,8 +64,8 @@
               :value="actives[item.name]"
               v-bind:key="item.name"
               >
-              <!--<v-touch v-on:press="select(item)"  slot="item">-->
-                <v-list-tile :name="item._id" slot="item" @contextmenu.stop.prevent="select(item)">
+              <v-touch v-on:press="select(item)"  slot="item">
+                <v-list-tile :name="item._id" @contextmenu.stop.prevent="" :ripple="false">
                   <v-checkbox
                     primary
                     hide-details
@@ -111,8 +111,8 @@
         <v-card class="hidden-xs-only" :flat="!!(ids || goal)" style="padding:0px">
           <v-list two-line>
             <template v-for="item in items">
-              <!--<v-touch v-on:press="select(item)" v-bind:key="item.name">-->
-                <v-list-tile :name="item._id" @contextmenu.stop.prevent="select(item)">
+              <v-touch v-on:press="select(item)" v-bind:key="item.name">
+                <v-list-tile :name="item._id" @contextmenu.stop.prevent="" :ripple="false">
                   <v-checkbox
                     primary
                     hide-details
@@ -148,7 +148,7 @@
                         <v-icon>create</v-icon>
                       </v-btn>
                 </v-list-tile>
-              <!--</v-touch>-->
+              </v-touch>
             </template>
           </v-list>
         </v-card>
@@ -178,24 +178,33 @@ export default {
     name: 'todos',
     props: ['goal', 'ids', 'hideAddButton'],
     created() {
-      if(this.$root.$data.database.isReady()) {
+      this.$root.$data.database.whenReady(() => {
           this.noTodos = this.$root.$data.database.getTodos().count() < 1
           if (this.noTodos) {
               this.ready = true
               this.$router.push({name: 'dashboard'})
               return
           }
-          this.buildData()
-      }
-      else this.$root.$data.database.whenReady(() => {
-          this.noTodos = this.$root.$data.database.getTodos().count() < 1
-          if (this.noTodos) {
-              this.ready = true
-              this.$router.push({name: 'dashboard'})
-              return
+
+          // makegoal action should not be available when viewing a goal/specific set of ids
+          if (!(this.ids && this.goal))
+            this.actions.push({
+              text: 'Make into Goal',
+              action: 'makegoal',
+              icon: 'done_all'
+            })
+          this.$root.$data.actions = this.actions
+          this.$root.$data.handler = (action) => {
+            this.actionSelected = action
+            this.doTheThings()
           }
           this.buildData()
       })
+    },
+    beforeDestroy() {
+      this.$root.$data.showActions = false
+      this.$root.$data.actions = []
+      this.$root.$data.handler = null
     },
     data() {
       return {
@@ -203,7 +212,7 @@ export default {
           {
             text: 'Delete',
             action: 'delete',
-            icon: 'delete'
+            icon: 'delete',
           },
           ],
           actionSelected: "",
@@ -262,18 +271,6 @@ export default {
           for(let i=0;i<this.items.length;i++) {
             this.actives[this.items[i].name] = false
           }
-          // makegoal action should not be available when viewing a goal/specific set of ids
-          this.actions.push({
-            text: 'Make into Goal',
-            action: 'makegoal',
-            icon: 'done_all'
-          })
-        }
-        this.$root.$data.selected = this.selected
-        this.$root.$data.actions = this.actions
-        this.$root.$data.handler = (action) => {
-          this.actionSelected = action
-          this.doTheThings()
         }
       },
       createtodo: function () {
@@ -305,8 +302,8 @@ export default {
       doTheThings: function() {
         if(this.$root.$data.debug) console.log(this.actionSelected, this.selected)
         if (this.actionSelected && this.actionSelected.action == "delete") {
-          for (var i = 0;i < this.$root.$data.selected.length;i++) {
-            var todo = this.$root.$data.selected[i]
+          for (var i = 0;i < this.selected.length;i++) {
+            var todo = this.selected[i]
             if (this.$root.$data.debug) console.log(todo)
             // if we're attached to a goal, remove the todo(s) from the goal
             // TODO: remove todos attached to a goal even when not called from Goal.vue
@@ -316,30 +313,31 @@ export default {
             }
             this.$root.$data.database.deleteToDo(todo)
           }
-          this.$root.$data.selected = []
+          this.selected = []
           this.buildData()
         }
         else if(this.actionSelected && this.actionSelected.action == "makegoal") {
           let ids = []
-          for (var i = 0;i < this.$root.$data.selected.length;i++) {
-            ids.push(this.$root.$data.selected[i]._id)
+          for (var i = 0;i < this.selected.length;i++) {
+            ids.push(this.selected[i]._id)
           }
-          this.$root.$data.selected = []
+          this.selected = []
           this.$router.push({name: 'creategoal', params: {ids: ids}})
         }
       },
       select: function(item, e) {
         if (this.$root.$data.debug) console.log(document.getElementById(item._id))
-        if(this.$root.$data.selected.indexOf(item) >= 0) {
+        if(this.selected.indexOf(item) >= 0) {
           document.getElementsByName(item._id).forEach((e) => e.classList.remove("grey"))
-          this.$root.$data.selected = this.$root.$data.selected.filter((a) => a != item)
+          this.selected = this.selected.filter((a) => a != item)
           if (this.$root.$data.debug) console.log("de-selected: " + item)
         }
         else {
           document.getElementsByName(item._id).forEach((e) => e.classList.add("grey"))
-          this.$root.$data.selected.push(item)
+          this.selected.push(item)
           if (this.$root.$data.debug) console.log("selected: " + item)
         }
+        this.$root.$data.showActions = this.selected.length > 0
       }
   }
 }

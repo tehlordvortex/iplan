@@ -21,7 +21,7 @@ window.vueApp = new Vue({
   components: { App },
   data: {
     database: database,
-    selected: [],
+    showActions: false,
     actions: [],
     handler: null,
   	debug: true
