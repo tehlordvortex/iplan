@@ -1,42 +1,40 @@
 <template>
-  <v-container fluid>
-    <v-layout row wrap>
-      <v-flex xs12>
-        <!-- if there are specific ids being displayed, then flatten the card to fit into the UI -->
-        <v-card :flat="!!ids">
-          <v-list two-line>
-            <template v-for="goal in goals">
-              <v-list-tile v-bind:key="goal.name">
-                <v-list-tile-content>
-                  <v-list-tile-title v-html="goal.name"></v-list-tile-title>
-                  <v-list-tile-sub-title v-show="goal.dueDate">
-                    <v-icon>event</v-icon>
-                    <span>{{ goal.dueDate }}</span>
-                  </v-list-tile-sub-title>
-                </v-list-tile-content>
-                <!--<v-list-tile-action>-->
-                  <v-btn
-                    flat
-                    icon
-                    @click.native="deleteGoal(goal)"
-                  >
-                    <v-icon>delete</v-icon>
-                  </v-btn>
-                  <v-btn
-                    flat
-                    icon
-                    @click.native="viewGoal(goal._id)"
-                  >
-                    <v-icon>keyboard_arrow_right</v-icon>
-                  </v-btn>
-                <!--</v-list-tile-action>-->
-              </v-list-tile>
-            </template>
-          </v-list>
-        </v-card>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-layout row>
+    <v-flex xs12>
+      <!-- if there are specific ids being displayed, then flatten the card to fit into the UI -->
+      <v-card :flat="!!ids" style="padding:0px">
+        <v-list two-line>
+          <template v-for="goal in goals">
+            <v-list-tile v-bind:key="goal.name">
+              <v-list-tile-content>
+                <v-list-tile-title v-html="goal.name"></v-list-tile-title>
+                <v-list-tile-sub-title v-show="goal.dueDate">
+                  <v-icon>event</v-icon>
+                  <span>{{ goal.dueDate }}</span>
+                </v-list-tile-sub-title>
+              </v-list-tile-content>
+              <!--<v-list-tile-action>-->
+                <v-btn
+                  flat
+                  icon
+                  @click.native="deleteGoal(goal)"
+                >
+                  <v-icon>delete</v-icon>
+                </v-btn>
+                <v-btn
+                  flat
+                  icon
+                  @click.native="viewGoal(goal._id)"
+                >
+                  <v-icon>keyboard_arrow_right</v-icon>
+                </v-btn>
+              <!--</v-list-tile-action>-->
+            </v-list-tile>
+          </template>
+        </v-list>
+      </v-card>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
