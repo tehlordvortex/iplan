@@ -61,18 +61,16 @@ export default {
               icon: 'done_all'
             })
           this.$root.$data.actions = this.actions
-          this.$root.$data.handler = (action) => {
-            this.actionSelected = action
-            this.doTheThings()
-          }
+          this.$root.$data.handlers.push(this.actionHandler)
+          console.log(this.$root.$data.handler)
           this.buildData()
       })
     },
-    beforeDestroy() {
+    destroyed() {
       if (this.$root.$data.debug) console.log('destroyed ToDos component')
       this.$root.$data.showActions = false
       //this.$root.$data.actions = []
-      this.$root.$data.handler = null
+      this.$root.$data.handlers = this.$root.$data.handlers.filter((e) => e != this.actionHandler)
     },
     data() {
       return {
@@ -105,6 +103,10 @@ export default {
       }
     },
     methods: {
+      actionHandler: function (action) {
+        this.actionSelected = action
+        this.doTheThings()
+      },
       buildData: function () {
         if (this.goal) {
           this.ready = true

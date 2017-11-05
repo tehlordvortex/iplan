@@ -23,7 +23,7 @@ window.vueApp = new Vue({
     database: database,
     showActions: false,
     actions: [],
-    handler: null,
+    handlers: [],
   	debug: true
   }
 })
