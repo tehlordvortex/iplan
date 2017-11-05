@@ -194,7 +194,7 @@ export default {
     editToDo: function () {
       if(!this.todo.name) return
       this.$root.$data.database.updateToDo(this.todo)
-      this.$router.push('/')
+      this.$router.go(-1)
     },
     goBack: function () {
       this.$router.go(-1)
