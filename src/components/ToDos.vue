@@ -5,151 +5,15 @@
     </v-flex>
     <v-slide-y-transition>
       <v-flex v-show="ready && !noTodos" xs12>
-      	<!--<v-card class="hidden-sm-and-down" :flat="!!(ids || goal)">
-          <v-card-text>
-            <v-data-table
-              v-bind:headers="headers"
-              v-bind:items="items"
-              hide-actions
-              v-model="$root.$data.selected"
-              selected-key="_id"
-              select-all
-            >
-            <template slot="items" scope="props">
-              <td>
-                <v-checkbox
-                  primary
-                  hide-details
-                  v-model="props.selected"
-                ></v-checkbox>
-              </td>
-              <td>{{ props.item.name }}</td>
-              <td class="text-xs-right">{{ props.item.dueDate || "Never" }}</td>
-              <td class="text-xs-right">{{ props.item.dueTime || "Never" }}</td>
-              <td class="text-xs-right">
-                <v-checkbox
-                  primary
-                  hide-details
-                  :input-value="props.item.done"
-                  @click.native="updateToDo(props.item)"
-                >
-                </v-checkbox>
-              </td>
-              <td class="text-xs-right center">
-                <v-btn
-                  flat
-                  class="xs1 sm1"
-                  icon
-                  @click.native="deleteToDo(props.item)"
-                >
-                  <v-icon>delete</v-icon>
-                </v-btn>
-                <v-btn
-                  flat
-                  icon
-                  class="xs1 sm1"
-                  @click.native="editTodo(props.item)"
-                >
-                  <v-icon>create</v-icon>
-                </v-btn>
-              </td>
-            </template>
-          </v-data-table>
-        </v-card-text>
-        </v-card>-->
-        <v-card class="hidden-sm-and-up" :flat="!!(ids || goal)" style="padding:0px">
+        <v-card :flat="!!(ids || goal)" style="padding:0px">
           <v-list>
-            <v-list-group 
-              v-for="item in items"
-              :value="actives[item.name]"
-              v-bind:key="item.name"
-              >
-              <v-touch v-on:press="select(item)"  slot="item">
-                <v-list-tile :name="item._id" @contextmenu.stop.prevent="" :ripple="false">
-                  <v-checkbox
-                    primary
-                    hide-details
-                    style="display:inline"
-                    :input-value="item.done"
-                    @click.native.stop="updateToDo(item)"
-                  >
-                  </v-checkbox>
-                  <v-list-tile-content>
-                    
-                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
-                    <v-list-tile-sub-title>
-                      <v-icon v-show="item.dueDate">event</v-icon>
-                      <span v-show="item.dueDate">{{ item.dueDate }}</span>
-                      <v-icon v-show="item.dueTime">alarm</v-icon>
-                      <span v-show="item.dueTime">{{ item.dueTime }}</span>
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                  
-                </v-list-tile>
-              </v-touch>
-              <v-list-tile @click="">
-                    <v-btn
-                      flat
-                      class="xs1 sm1"
-                      icon
-                      @click.native="deleteToDo(item)"
-                    >
-                      <v-icon>delete</v-icon>
-                    </v-btn>
-                    <v-btn
-                      flat
-                      icon
-                      class="xs1 sm1"
-                      @click.native="editTodo(item)"
-                    >
-                      <v-icon>create</v-icon>
-                    </v-btn>
-              </v-list-tile>
-            </v-list-group>
-          </v-list>
-        </v-card>
-        <v-card class="hidden-xs-only" :flat="!!(ids || goal)" style="padding:0px">
-          <v-list two-line>
-            <template v-for="item in items">
-              <v-touch v-on:press="select(item)" v-bind:key="item.name">
-                <v-list-tile :name="item._id" @contextmenu.stop.prevent="" :ripple="false">
-                  <v-checkbox
-                    primary
-                    hide-details
-                    style="display:inline"
-                    :input-value="item.done"
-                    @click.native="updateToDo(item)"
-                  >
-                  </v-checkbox>
-                  <v-list-tile-content>
-                    
-                    <v-list-tile-title v-html="item.name"></v-list-tile-title>
-                    <v-list-tile-sub-title>
-                      <v-icon v-show="item.dueDate">event</v-icon>
-                      <span v-show="item.dueDate">{{ item.dueDate }}</span>
-                      <v-icon v-show="item.dueTime">alarm</v-icon>
-                      <span v-show="item.dueTime">{{ item.dueTime }}</span>
-                    </v-list-tile-sub-title>
-                  </v-list-tile-content>
-                    <v-btn
-                        flat
-                        class="xs1 sm1"
-                        icon
-                        @click.native="deleteToDo(item)"
-                      >
-                        <v-icon>delete</v-icon>
-                      </v-btn>
-                      <v-btn
-                        flat
-                        icon
-                        class="xs1 sm1"
-                        @click.native="editTodo(item)"
-                      >
-                        <v-icon>create</v-icon>
-                      </v-btn>
-                </v-list-tile>
-              </v-touch>
-            </template>
+            <ToDoItem
+              v-for="todo in items"
+              :key="todo.name"
+              :todo="todo"
+              :callbacks="callbacks"
+            >
+            </ToDoItem>
           </v-list>
         </v-card>
       </v-flex>
@@ -174,6 +38,7 @@
 </template>
 
 <script>
+import ToDoItem from './ToDoItem'
 export default {
     name: 'todos',
     props: ['goal', 'ids', 'hideAddButton'],
@@ -230,7 +95,13 @@ export default {
             { text: 'Done', value: 'done'},
             { text: 'Actions', value: 'actions' }
           ],
-          items: []
+          items: [],
+          callbacks: {
+            select: this.select,
+            update: this.updateToDo,
+            delete_: this.deleteToDo,
+            edit: this.editToDo
+          }
       }
     },
     methods: {
@@ -238,25 +109,21 @@ export default {
         if (this.goal) {
           this.ready = true
           this.items = []
-          this.actives = {}
           for (let i=0;i<this.goal.todo_ids.length;i++) {
             let todo = null
             if (todo = this.$root.$data.database.getToDo(this.goal.todo_ids[i])) {
               this.items.push(todo)
-              this.actives[todo.name] = false
             }
           }  
         }
         else if (this.ids) {
           this.ready = true
           this.items = []
-          this.actives = {}
           let ids = (typeof this.ids == 'string') ? this.ids.split(',') : this.ids
           for (let i = 0;i<ids.length;i++) {
             let todo = null;
             if (todo = this.$root.$data.database.getToDo(ids[i])) {
               this.items.push(todo)
-              this.actives[todo.name] = false
             }
           }
         }
@@ -269,11 +136,7 @@ export default {
             return
           }
           this.ready = true
-          this.actives = {}
           this.items = allTodos;
-          for(let i=0;i<this.items.length;i++) {
-            this.actives[this.items[i].name] = false
-          }
         }
       },
       createtodo: function () {
@@ -298,7 +161,7 @@ export default {
         this.$root.$data.database.deleteToDo(todo)
         this.buildData()
       },
-      editTodo: function (props) {
+      editToDo: function (props) {
         if(this.$root.$data.debug) console.log(props)
         this.$router.push({name: 'edittodo', params: {id: props._id}})
       },
@@ -342,6 +205,9 @@ export default {
         }
         this.$root.$data.showActions = this.selected.length > 0
       }
+  },
+  components: {
+    ToDoItem
   }
 }
 </script>
