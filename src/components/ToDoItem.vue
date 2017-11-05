@@ -1,35 +1,18 @@
 <template>
   <div>
-    <!--<div class="hidden-sm-and-up">
-      <v-list-group :value="showActions">
-        <v-list-tile slot="okay" @click="">
-              <v-btn
-                flat
-                class="xs1 sm1"
-                icon
-                @click.native="callbacks.delete_(todo)"
+    <div class="hidden-sm-and-up">
+      <v-list-group v-model="showActions">
+        <v-touch v-on:press="callbacks.select(todo)" slot="item">
+          <v-list-tile :name="todo._id" @click="showActions = !showActions" @contextmenu.stop.prevent="" :ripple="false">
+            <v-list-tile-action>
+              <v-checkbox
+                primary
+                hide-details
+                :input-value="todo.done"
+                @click.native.stop="callbacks.update(todo)"
               >
-                <v-icon>delete_</v-icon>
-              </v-btn>
-              <v-btn
-                flat
-                icon
-                class="xs1 sm1"
-                @click.native="callbacks.edit(todo)"
-              >
-                <v-icon>create</v-icon>
-              </v-btn>
-        </v-list-tile>
-        <v-touch v-on:press="callbacks.select(todo)">
-          <v-list-tile :name="todo._id" @contextmenu.stop.prevent="" :ripple="false">
-            <v-checkbox
-              primary
-              hide-details
-              style="display:inline"
-              :input-value="todo.done"
-              @click.native.stop="callbacks.update(todo)"
-            >
-            </v-checkbox>
+              </v-checkbox>
+            </v-list-tile-action>
             <v-list-tile-content>
               <v-list-tile-title v-html="todo.name"></v-list-tile-title>
               <v-list-tile-sub-title>
@@ -44,9 +27,27 @@
             </v-list-tile-action>
           </v-list-tile>
         </v-touch>
+        <v-list-tile @click="">
+          <v-btn
+            flat
+            class="xs1 sm1"
+            icon
+            @click.native="callbacks.delete_(todo)"
+          >
+            <v-icon>delete_</v-icon>
+          </v-btn>
+          <v-btn
+            flat
+            icon
+            class="xs1 sm1"
+            @click.native="callbacks.edit(todo)"
+          >
+            <v-icon>create</v-icon>
+          </v-btn>
+        </v-list-tile>
       </v-list-group>
-    </div>-->
-    <div>
+    </div>
+    <div class="hidden-xs-only">
       <v-touch v-on:press="callbacks.select(todo)">
         <v-list-tile :name="todo._id" @contextmenu.stop.prevent="" :ripple="false">
           <v-checkbox
@@ -85,6 +86,7 @@
         </v-list-tile>
       </v-touch>
     </div>
+    
   </div>
 </template>
 
@@ -96,6 +98,13 @@ export default {
     return {
       showActions: false
     }
+  },
+  methods: {
+    click: function() {
+      console.log('clicked')
+    }
+  },
+  computed: {
   }
 }
 </script>
