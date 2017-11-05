@@ -5,7 +5,7 @@
       <v-card v-if="this.goals.length > 0" :flat="!!ids" style="padding:0px">
         <v-list two-line>
           <template v-for="goal in goals">
-            <v-list-tile v-bind:key="goal.name" @click.stop="viewGoal(goal._id)" :ripple="false">
+            <v-list-tile v-bind:key="goal.name" @click.native.stop="viewGoal(goal._id)" :ripple="false">
               <v-list-tile-content>
                 <v-list-tile-title v-html="goal.name"></v-list-tile-title>
                 <v-list-tile-sub-title v-show="goal.dueDate">
@@ -17,14 +17,14 @@
                 <v-btn
                   flat
                   icon
-                  @click.native="deleteGoal(goal)"
+                  @click.native.stop="deleteGoal(goal)"
                 >
                   <v-icon>delete</v-icon>
                 </v-btn>
                 <v-btn
                   flat
                   icon
-                  @click.native="viewGoal(goal._id)"
+                  @click.native.stop="viewGoal(goal._id)"
                 >
                   <v-icon>keyboard_arrow_right</v-icon>
                 </v-btn>
