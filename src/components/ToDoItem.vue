@@ -3,7 +3,7 @@
     <div class="hidden-sm-and-up">
       <v-list-group v-model="showActions">
         <v-touch v-on:press="callbacks.select(todo)" slot="item">
-          <v-list-tile :name="todo._id" @click="showActions = !showActions" @contextmenu.stop.prevent="" :ripple="false">
+          <v-list-tile :name="todo._id" @click="click" @contextmenu.stop.prevent="" :ripple="false">
             <v-list-tile-action>
               <v-checkbox
                 primary
@@ -101,7 +101,7 @@ export default {
   },
   methods: {
     click: function() {
-      console.log('clicked')
+      this.showActions = !this.showActions
     }
   },
   computed: {
