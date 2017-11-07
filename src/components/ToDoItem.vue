@@ -4,15 +4,13 @@
       <v-list-group v-model="showActions">
         <v-touch v-on:press="callbacks.select(todo)" slot="item">
           <v-list-tile :name="todo._id" @click="click" @contextmenu.stop.prevent="" :ripple="false">
-            <v-list-tile-action>
-              <v-checkbox
-                primary
-                hide-details
-                :input-value="todo.done"
-                @click.native.stop="callbacks.update(todo)"
-              >
-              </v-checkbox>
-            </v-list-tile-action>
+            <v-checkbox
+              primary
+              hide-details
+              :input-value="todo.done"
+              @click.native.stop="callbacks.update(todo)"
+            >
+            </v-checkbox>
             <v-list-tile-content>
               <v-list-tile-title v-html="todo.name"></v-list-tile-title>
               <v-list-tile-sub-title>
