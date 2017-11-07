@@ -16,7 +16,7 @@
           <v-progress-circular indeterminate class="primary--text"></v-progress-circular>
         </v-flex>
       </v-layout>
-      <v-container grid-list-xl style="padding: 0px;margin: 0px">
+      <v-container grid-list-xl>
         <v-layout row>
           <v-flex xs12>
             <v-card v-if="!noTodos && ready"class="primary white">
