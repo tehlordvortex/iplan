@@ -146,7 +146,7 @@ export default {
           }
         }
         else {
-          var allTodos = this.$root.$data.database.getTodos().find({});
+          var allTodos = this.$root.$data.database.getTodos().find({"goalId": {"$eq": null}});
           if(this.$root.$data.debug) console.log(allTodos)
           if(allTodos.length == 0) {
             this.noTodos = true

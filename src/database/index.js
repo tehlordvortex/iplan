@@ -64,6 +64,12 @@ class DB {
 			callback(true, null)
 		}
 		else {
+			goal.todo_ids.forEach((id) => {
+				var todo
+				if(( todo = this.getToDo(id) )) {
+					todo.goalId = goal._id
+				}
+			})
 			callback(false, goal._id)
 		}
 	}
@@ -73,25 +79,40 @@ class DB {
 	deleteGoal(goal) {
 		this._goals.remove(goal)
 	}
-	addToDo(name, dueDate, dueTime, callback) {
+	addToDo(todoObj, callback) {
 		if (!this._todos) {
 			callback(true, null);
 			return;
 		}
 		var todo = {
 			_id: btoa(new Date().toISOString()),
-			name: name,
-			dueDate: dueDate,
-			dueTime: dueTime,
-			done: false
+			name: todoObj.name,
+			dueDate: todoObj.dueDate,
+			dueTime: todoObj.dueTime,
+			done: false,
+			goalId: todoObj.goalId
 		}
-		if(!this._todos.insert(todo)) {
-			callback(true, todo._id)
+		if (todo.goalId) {
+			var goal
+			if (( goal = this.getGoal(todo.goalId) )) {
+				if(!this._todos.insert(todo)) {
+					callback(true, todo._id)
+				}
+				else {
+					goal.todo_ids.push(todo)
+					this.updateGoal(goal)
+					callback(true, todo._id)
+				}
+			}
 		}
 		else {
-			callback(false, todo._id)
+			if(!this._todos.insert(todo)) {
+				callback(true, todo._id)
+			}
+			else {
+				callback(false, todo._id)
+			}
 		}
-
 	}
 	getToDo(id) {
 		var found = this._todos.find({"_id": id})
