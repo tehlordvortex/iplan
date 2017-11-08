@@ -16,6 +16,21 @@
             </ToDoItem>
           </v-list>
         </v-card>
+        <v-dialog
+          persistent
+          v-model="showDeleteConfirm"
+          lazy
+          full-width
+        >
+          <v-card>
+            <v-card-title><span class="headline mb-0">Are you sure?</span></v-card-title>
+            <v-card-text>Are you sure you want to delete these todo(s)? This action is irreversible.</v-card-text>
+            <v-card-actions>
+              <v-btn @click.native.stop="confirmCallback" flat class="blue--text">Yes</v-btn>
+              <v-btn @click.native.stop="abortCallback" flat class="red--text">No</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-flex>
     </v-slide-y-transition>
     <v-fab-transition>
@@ -86,6 +101,7 @@ export default {
           className: {},
           ready: false,
           noTodos: false,
+          showDeleteConfirm: false,
           headers: [
             { text: 'Name', value: 'name' },
             { text: 'Due Date', value: 'dueDate'},
@@ -156,12 +172,21 @@ export default {
       },
       deleteToDo: function (todo) {
         if(this.$root.$data.debug) console.log(todo)
-        if(this.goal) {
-          this.goal.todo_ids = this.goal.todo_ids.filter((id) => id != todo._id)
-          this.$root.$data.database.updateGoal(this.goal)
+        this.showDeleteConfirm = true
+        this.confirmCallback = () => {
+          if(this.goal) {
+            this.goal.todo_ids = this.goal.todo_ids.filter((id) => id != todo._id)
+            this.$root.$data.database.updateGoal(this.goal)
+          }
+          this.$root.$data.database.deleteToDo(todo)
+          this.showDeleteConfirm = false
+          this.confirmCallback = undefined
+          this.buildData()
         }
-        this.$root.$data.database.deleteToDo(todo)
-        this.buildData()
+        this.abortCallback = () => {
+          this.showDeleteConfirm = false
+          this.abortCallback = undefined
+        }
       },
       editToDo: function (props) {
         if(this.$root.$data.debug) console.log(props)
@@ -170,19 +195,31 @@ export default {
       doTheThings: function() {
         if(this.$root.$data.debug) console.log(this.actionSelected, this.selected)
         if (this.actionSelected && this.actionSelected.action == "delete") {
-          for (var i = 0;i < this.selected.length;i++) {
-            var todo = this.selected[i]
-            if (this.$root.$data.debug) console.log(todo)
-            // if we're attached to a goal, remove the todo(s) from the goal
-            // TODO: remove todos attached to a goal even when not called from Goal.vue
-            if (this.goal) {
-              this.goal.todo_ids = this.goal.todo_ids.filter((value, index) => value != todo._id)
-              this.$root.$data.database.whenReady((db) => db.updateGoal(this.goal))
+          this.showDeleteConfirm = true
+          this.confirmCallback = () => {
+            for (var i = 0;i < this.selected.length;i++) {
+              var todo = this.selected[i]
+              if (this.$root.$data.debug) console.log(todo)
+              // if we're attached to a goal, remove the todo(s) from the goal
+              // TODO: remove todos attached to a goal even when not called from Goal.vue
+              if (this.goal) {
+                this.goal.todo_ids = this.goal.todo_ids.filter((value, index) => value != todo._id)
+                this.$root.$data.database.whenReady((db) => db.updateGoal(this.goal))
+              }
+              this.$root.$data.database.deleteToDo(todo)
             }
-            this.$root.$data.database.deleteToDo(todo)
+            this.$root.$data.showActions = false
+            this.selected = []
+            this.showDeleteConfirm = false
+            this.confirmCallback = undefined
+            this.buildData()
           }
-          this.selected = []
-          this.buildData()
+          this.abortCallback = () => {
+            this.selected.forEach((item) => this.select(item)) // undo selection
+            this.selected = []
+            this.showDeleteConfirm = false
+            this.abortCallback = undefined
+          }
         }
         else if(this.actionSelected && this.actionSelected.action == "makegoal") {
           let ids = []
