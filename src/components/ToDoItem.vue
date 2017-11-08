@@ -32,7 +32,7 @@
             icon
             @click.native="callbacks.delete_(todo)"
           >
-            <v-icon>delete_</v-icon>
+            <v-icon>delete</v-icon>
           </v-btn>
           <v-btn
             flat
@@ -71,7 +71,7 @@
                 icon
                 @click.native="callbacks.delete_(todo)"
               >
-                <v-icon>delete_</v-icon>
+                <v-icon>delete</v-icon>
               </v-btn>
               <v-btn
                 flat
