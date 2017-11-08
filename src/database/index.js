@@ -99,7 +99,7 @@ class DB {
 					callback(true, todo._id)
 				}
 				else {
-					goal.todo_ids.push(todo)
+					goal.todo_ids.push(todo._id)
 					this.updateGoal(goal)
 					callback(true, todo._id)
 				}

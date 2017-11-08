@@ -61,6 +61,7 @@ export default {
   methods: {
     buildData(db) {
       this.goal = db.getGoal(this.$route.params.id)
+      if(this.$root.$data.debug) console.log(this.goal)
       if (!this.goal)
         this.notFound = true
     },
@@ -69,6 +70,8 @@ export default {
       this.confirmCallback = () => {
         this.goal.todo_ids.forEach((todoId) => {
           var todo = this.$root.$data.database.getToDo(todoId)
+          if(this.$root.$data.debug) console.log(todo)
+          if(!todo) return
           if (todo.goalId && todo.goalId == this.goal._id) {
             this.$root.$data.database.deleteToDo(todo)
           }

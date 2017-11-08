@@ -81,6 +81,16 @@
               >
                 <v-icon>create</v-icon>
               </v-btn>
+              <v-checkbox
+                class="hidden-xs-only"
+                primary
+                hide-details
+                style="display: inline"
+                v-if="callbacks.showSelect"
+                :input-value="selected"
+                @click.native="select"
+              >
+              </v-checkbox>
         </v-list-tile>
       </v-touch>
     </div>
@@ -94,10 +104,15 @@ export default {
   props: ['todo', 'callbacks'],
   data: function () {
     return {
-      showActions: false
+      showActions: false,
+      selected: false
     }
   },
   methods: {
+    select: function() {
+      this.callbacks.select(this.todo)
+      this.selected = this.callbacks.isSelected(this.todo) //!this.selected
+    },
     click: function() {
       this.showActions = !this.showActions
     }

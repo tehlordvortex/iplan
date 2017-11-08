@@ -25,7 +25,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar fixed class="blue" id="main-toolbar" dark dense>
+    <v-toolbar fixed class="blue" id="main-toolbar" dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>iPlan</v-toolbar-title>
       <v-spacer></v-spacer>

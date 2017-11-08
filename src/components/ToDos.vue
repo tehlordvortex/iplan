@@ -1,55 +1,102 @@
 <template>
-  <v-layout row>
-  	<v-flex  v-if="!ready" xs1 offset-sm12>
-    	<v-progress-circular indeterminate class="primary--text"></v-progress-circular>
-    </v-flex>
-    <v-slide-y-transition>
-      <v-flex v-show="ready && !noTodos" xs12>
-        <v-card :flat="!!(ids || goal)" style="padding:0px">
-          <v-list>
-            <ToDoItem
-              v-for="todo in items"
-              :key="todo.name"
-              :todo="todo"
-              :callbacks="callbacks"
-            >
-            </ToDoItem>
-          </v-list>
-        </v-card>
-        <v-dialog
-          persistent
-          v-model="showDeleteConfirm"
-          lazy
-          full-width
-        >
-          <v-card>
-            <v-card-title><span class="headline mb-0">Are you sure?</span></v-card-title>
-            <v-card-text>Are you sure you want to delete these todo(s)? This action is irreversible.</v-card-text>
-            <v-card-actions>
-              <v-btn @click.native.stop="confirmCallback" flat class="blue--text">Yes</v-btn>
-              <v-btn @click.native.stop="abortCallback" flat class="red--text">No</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
+  <div>
+    <v-layout row>
+    	<v-flex  v-if="!ready" xs1 offset-sm12>
+      	<v-progress-circular indeterminate class="primary--text"></v-progress-circular>
       </v-flex>
-    </v-slide-y-transition>
+      <v-slide-y-transition>
+        <v-flex v-show="ready && !noTodos" xs12>
+          <v-card :flat="!!(ids || goal)" style="padding:0px">
+            <v-list>
+              <ToDoItem
+                v-for="todo in items"
+                :key="todo.name"
+                :todo="todo"
+                :callbacks="callbacks"
+              >
+              </ToDoItem>
+            </v-list>
+          </v-card>
+          <v-dialog
+            persistent
+            v-model="showDeleteConfirm"
+            lazy
+            full-width
+          >
+            <v-card>
+              <v-card-title><span class="headline mb-0">Are you sure?</span></v-card-title>
+              <v-card-text>Are you sure you want to delete these todo(s)? This action is irreversible.</v-card-text>
+              <v-card-actions>
+                <v-btn @click.native.stop="confirmCallback" flat class="blue--text">Yes</v-btn>
+                <v-btn @click.native.stop="abortCallback" flat class="red--text">No</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+        </v-flex>
+      </v-slide-y-transition>
+      <v-fab-transition>
+        <v-btn
+        	absolute
+          fixed
+          dark
+          fab
+          bottom
+          right
+          class="pink hidden-sm-and-up"
+          style="margin-bottom: 3rem"
+          v-show="ready && !hideAddButton"
+          @click.native="createtodo"
+        >
+            <v-icon>add</v-icon>
+        </v-btn>
+      </v-fab-transition>
+    </v-layout>
     <v-fab-transition>
-      <v-btn
-      	absolute
+      <v-speed-dial
         fixed
-        dark
-        fab
+        v-model="showFab"
+        direction="top"
+        transition="scale-transition"
+        v-show="ready && !hideAddButton"
+        class="hidden-xs-only"
+        hover
         bottom
         right
-        class="pink"
-        style="margin-bottom: 3rem"
-        v-show="ready && !hideAddButton"
-        @click.native="createtodo"
       >
+        <v-btn
+          slot="activator"
+          class="pink"
+          fab
+          hover
+          :dark="!showFab"
+          :outline="showFab"
+          v-model="showFab"
+        >
+          <v-icon>create</v-icon>
+          <v-icon>close</v-icon>
+        </v-btn>
+        <v-btn
+          dark
+          small
+          fab
+          class="green"
+          @click.native="createtodo"
+        >
           <v-icon>add</v-icon>
-      </v-btn>
+        </v-btn>
+        <v-btn
+          dark
+          small
+          fab
+          class="purple"
+          v-if="!!!(ids || goal)"
+          @click.native="callbacks.showSelect = !callbacks.showSelect"
+        >
+          <v-icon>view_agenda</v-icon>
+        </v-btn>
+      </v-speed-dial>
     </v-fab-transition>
-  </v-layout>
+  </div>
 </template>
 
 <script>
@@ -102,6 +149,7 @@ export default {
           ready: false,
           noTodos: false,
           showDeleteConfirm: false,
+          showFab: false,
           headers: [
             { text: 'Name', value: 'name' },
             { text: 'Due Date', value: 'dueDate'},
@@ -114,7 +162,9 @@ export default {
             select: this.select,
             update: this.updateToDo,
             delete_: this.deleteToDo,
-            edit: this.editToDo
+            edit: this.editToDo,
+            isSelected: this.isToDoSelected,
+            showSelect: false
           }
       }
     },
@@ -146,7 +196,7 @@ export default {
           }
         }
         else {
-          var allTodos = this.$root.$data.database.getTodos().find({"goalId": {"$eq": null}});
+          var allTodos = this.$root.$data.database.getTodos().find({})//{"goalId": {"$eq": null}});
           if(this.$root.$data.debug) console.log(allTodos)
           if(allTodos.length == 0) {
             this.noTodos = true
@@ -243,6 +293,12 @@ export default {
           if (this.$root.$data.debug) console.log("selected: " + item)
         }
         this.$root.$data.showActions = this.selected.length > 0
+      },
+      isToDoSelected: function(todo) {
+        if(this.$root.$data.debug) console.log(todo)
+        var found = false
+        this.selected.forEach((item) => found = item === todo)
+        return found
       }
   },
   components: {

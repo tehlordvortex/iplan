@@ -89,12 +89,14 @@ export default {
         this.goals = this.goals.filter((g) => g != goal)
         goal.todo_ids.forEach((todoId) => {
           var todo = this.$root.$data.database.getToDo(todoId)
+          if(this.$root.$data.debug) console.log(todo)
+          if(!todo) return
           if (todo.goalId && todo.goalId == goal._id) {
             this.$root.$data.database.deleteToDo(todo)
           }
         })
-        this.$root.$data.database.deleteGoal(goal)
         this.showDeleteConfirm = false
+        this.$root.$data.database.deleteGoal(goal)
       }
       this.abortCallback = () => {
         this.showDeleteConfirm = false
