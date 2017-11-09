@@ -45,13 +45,6 @@
           </v-flex>
         </v-layout>
       </v-container>
-      <v-fade-transition>
-        <div class="splash blue" v-show="!ready">
-          <v-progress-circular style="margin-top: 50vh;" indeterminate class="white--text">
-            <h2 class="white--text" style="margin-bottom: 5rem">iPlan</h2>
-          </v-progress-circular>
-        </div>
-      </v-fade-transition>
     </div>
 </template>
 
@@ -110,17 +103,5 @@ export default {
 </script>
 
 <style scoped>
-.splash {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
-  z-index: 9001;
-  text-align: center;
-}
-.center {
-  /*margin: auto;*/
-}
+
 </style>

@@ -40,12 +40,28 @@
         <router-view></router-view>
       </v-container>
     </main>
+    <v-fade-transition>
+      <div class="splash blue" v-show="!ready">
+        <v-progress-circular style="margin-top: 50vh;" v-if="!showWelcome" indeterminate class="white--text">
+          <h2 class="white--text" style="margin-bottom: 5rem">iPlan</h2>
+        </v-progress-circular>
+        <v-fade-transition>
+          <h2 style="margin-top: 40vh" v-show="showWelcome" class="white--text">Welcome</h2>
+        </v-fade-transition>
+      </div>
+    </v-fade-transition>
   </v-app>
 </template>
 
 <script>
 export default {
   name: 'app',
+  created() {
+    this.$root.$data.database.whenReady(() => {
+      setTimeout( () => this.showWelcome = true, 1000)
+      setTimeout( () => this.ready = true, 2000)
+    })
+  },
   data() {
     return {
       pages: [
@@ -66,11 +82,22 @@ export default {
         }
       ],
       drawer: false,
+      ready: false,
+      showWelcome: false
     }
   }
 }
 </script>
 
-<style>
-
+<style scoped>
+.splash {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  height: 100vh;
+  width: 100vw;
+  z-index: 9001;
+  text-align: center;
+}
 </style>
