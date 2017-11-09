@@ -81,16 +81,18 @@
               >
                 <v-icon>create</v-icon>
               </v-btn>
-              <v-checkbox
-                class="hidden-xs-only"
-                primary
-                hide-details
-                style="display: inline"
-                v-if="callbacks.showSelect"
-                :input-value="selected"
-                @click.native="select"
-              >
-              </v-checkbox>
+              <v-slide-x-transition>
+                <v-checkbox
+                  class="hidden-xs-only"
+                  primary
+                  hide-details
+                  style="display: inline"
+                  v-if="callbacks.showSelect"
+                  :input-value="selected"
+                  @click.native="select"
+                >
+                </v-checkbox>
+              </v-slide-x-transition>
         </v-list-tile>
       </v-touch>
     </div>

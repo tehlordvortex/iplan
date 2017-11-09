@@ -59,7 +59,6 @@
         transition="scale-transition"
         v-show="ready && !hideAddButton"
         class="hidden-xs-only"
-        hover
         bottom
         right
       >
