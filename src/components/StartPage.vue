@@ -3,8 +3,8 @@
       <v-layout row>
         <v-fab-transition>
           <v-flex v-if="ready" xs12 sm6 offset-sm3>
-            <v-card v-if="noTodos" class="primary white">
-              <v-card-title primary-title><h3 class="headline mb-0">SO BLENK</h3></v-card-title>
+            <v-card v-if="noTodos" flat>
+              <v-card-title primary-title><span style="font-size: 2em">SO BLENK</span></v-card-title>
               <v-card-text>You have yet to create any ToDo, Ser User.</v-card-text>
               <v-card-actions>
                 <v-btn flat to="/create/todo" class="blue--text">Create</v-btn>
@@ -13,11 +13,11 @@
           </v-flex>
         </v-fab-transition>
       </v-layout>
-      <v-container grid-list-xl>
+      <v-container grid-list-xl class="pa-0">
         <v-layout row>
           <v-flex xs12>
-            <v-card v-if="!noTodos && ready"class="primary white">
-              <v-card-title primary-title><h3 class="headline mb-0">Upcoming ToDos</h3></v-card-title>
+            <v-card v-if="!noTodos && ready" flat>
+              <v-card-title><span style="font-size: 2em">Upcoming ToDos</span></v-card-title>
               <v-card-text>
                 <ToDos v-if="upcomingTodos != ''" :ids="upcomingTodos" :hideAddButton="true"></ToDos>
                 <span v-else>Nothing left to do!</span>
@@ -32,7 +32,7 @@
         <v-layout row>
           <v-flex xs12>
             <v-card v-if="!noGoals && ready" class="primary white">
-              <v-card-title primary-title><h3 class="headline mb-0">Upcoming Goals</h3></v-card-title>
+              <v-card-title primary-title><span style="font-size: 2em">Upcoming Goals</span></v-card-title>
               <v-card-text>
                 <Goals v-if="upcomingGoals != ''" :ids="upcomingGoals"></Goals>
                 <span v-else>No goals in the near future!</span>
@@ -89,6 +89,7 @@ export default {
       return {
         ready: false,
         noTodos: false,
+        noGoals: false,
         upcomingTodos: "",
         upcomingGoals: ""
       }

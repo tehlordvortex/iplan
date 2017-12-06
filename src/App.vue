@@ -1,8 +1,7 @@
 <template>
-  <v-app>
+  <v-app :dark="$root.$data.darkTheme">
     <v-navigation-drawer
-      temporary
-      light
+      :dark="$root.$data.darkTheme"
       v-model="drawer">
        <v-toolbar flat class="transparent">
         <v-list class="pa-0">
@@ -25,7 +24,7 @@
         </v-list-tile>
       </v-list>
     </v-navigation-drawer>
-    <v-toolbar fixed class="blue" id="main-toolbar" dark>
+    <v-toolbar fixed class="blue" id="main-toolbar" flat dark>
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>iPlan</v-toolbar-title>
       <v-spacer></v-spacer>
@@ -36,7 +35,10 @@
       </template>
     </v-toolbar>
     <main>
-      <v-container fluid>
+      <!--<v-container class="hidden-xs-only" fluid>
+        <router-view></router-view>
+      </v-container>-->
+      <v-container class="ma-0 pa-0" fluid>
         <router-view></router-view>
       </v-container>
     </main>

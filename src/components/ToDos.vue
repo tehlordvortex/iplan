@@ -5,8 +5,9 @@
       	<v-progress-circular indeterminate class="primary--text"></v-progress-circular>
       </v-flex>
       <v-slide-y-transition>
-        <v-flex v-show="ready && !noTodos" xs12>
-          <v-card :flat="!!(ids || goal)" style="padding:0px">
+        <v-flex v-show="ready && !noTodos" class="todolist-flex" xs12 sm6 offset-sm3>
+          <!--<v-card :flat="!!(ids || goal)" style="padding:0px">-->
+          <v-card flat class="pa-0">
             <v-list>
               <ToDoItem
                 v-for="todo in items"
@@ -123,9 +124,19 @@ export default {
             })
           this.$root.$data.actions = this.actions
           this.$root.$data.handlers.push(this.actionHandler)
-          console.log(this.$root.$data.handler)
+          if (this.$root.$data.debug) console.log(this.$root.$data.handlers)
           this.buildData()
       })
+    },
+    mounted() {
+      let items = this.$el.querySelectorAll(".todolist-flex")
+
+      /*if (this.ids || this.goal) {
+        items.forEach((node) => {
+          node.classList.toggle('sm6')
+          node.classList.tooggle('offset-sm3')
+        })
+      }*/
     },
     destroyed() {
       if (this.$root.$data.debug) console.log('destroyed ToDos component')
@@ -244,6 +255,7 @@ export default {
       doTheThings: function() {
         if(this.$root.$data.debug) console.log(this.actionSelected, this.selected)
         if (this.actionSelected && this.actionSelected.action == "delete") {
+          if (this.$root.$data.debug) console.log("delete popup")
           this.showDeleteConfirm = true
           this.confirmCallback = () => {
             for (var i = 0;i < this.selected.length;i++) {

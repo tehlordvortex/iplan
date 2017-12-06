@@ -1,8 +1,8 @@
 <template>
   <v-layout row>
-    <v-flex xs12>
+    <v-flex xs12 sm6 offset-sm3>
       <!-- if there are specific ids being displayed, then flatten the card to fit into the UI -->
-      <v-card v-if="this.goals.length > 0" :flat="!!ids" style="padding:0px">
+      <v-card v-if="this.goals.length > 0" flat class="pa-0">
         <v-list two-line>
           <template v-for="goal in goals">
             <v-list-tile v-bind:key="goal.name" @click.native.stop="viewGoal(goal._id)" :ripple="false">
@@ -34,7 +34,7 @@
         </v-list>
       </v-card>
       <v-card v-else>
-        <v-card-title><h3 class="headline mb-0">No Goals</h3></v-card-title>
+        <v-card-title><span style="font-size: 2em">No Goals</span></v-card-title>
         <v-card-text>You seem to have no goals in life.</v-card-text>
         <v-card-actions>
           <v-btn to="/todos" class="blue--text" flat>Create One</v-btn>

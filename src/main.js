@@ -10,6 +10,12 @@ import router from './router'
 import App from './App'
 import database from './database'
 
+Array.prototype.pushUnique = function (item) {
+  let present = false
+  this.forEach((x) => present = x === item)
+  if (!present)
+    this.push(item)
+};
 Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(VueTouch, {name: 'v-touch'})
@@ -24,6 +30,7 @@ window.vueApp = new Vue({
     showActions: false,
     actions: [],
     handlers: [],
-  	debug: true
+  	debug: true,
+    darkTheme: true
   }
 })

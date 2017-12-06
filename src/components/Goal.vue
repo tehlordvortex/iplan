@@ -1,9 +1,9 @@
 <template>
   <v-layout>
-    <v-flex xs12 sm10 offset-sm1>
-      <v-card v-if="!this.notFound">
+    <v-flex xs12 sm6 offset-sm3>
+      <v-card flat v-if="!this.notFound">
         <v-card-title>
-          <div class="headline">{{ goal.name }}</div>
+          <span style="font-size: 2em">{{ goal.name }}</span>
           <div>
             <v-btn icon flat @click.native.stop="deleteGoal"><v-icon>delete</v-icon></v-btn>
           </div>
@@ -16,9 +16,9 @@
           <ToDos v-bind:goal="goal"></ToDos>
         </v-card-text>
       </v-card>
-      <v-card v-if="this.notFound">
+      <v-card flat v-else>
         <v-card-title>
-          <div class="headline">Goal Not Found</div>
+          <span style="font-size: 2em">Goal Not Found</span>
         </v-card-title>
         <v-card-text>There exists no goal with the specified ID</v-card-text>
         <v-card-actions>
@@ -33,7 +33,7 @@
       >
         <v-card>
           <v-card-title><span class="headline mb-0">Are you sure?</span></v-card-title>
-          <v-card-text>Are you sure you want to delete these goals(s)? This action is irreversible.</v-card-text>
+          <v-card-text>Are you sure you want to delete these goal(s)? This action is irreversible.</v-card-text>
           <v-card-actions>
             <v-btn @click.native.stop="confirmCallback" flat class="blue--text">Yes</v-btn>
             <v-btn @click.native.stop="abortCallback" flat class="red--text">No</v-btn>
