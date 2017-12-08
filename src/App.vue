@@ -1,8 +1,8 @@
 <template>
-  <v-app :dark="darkTheme">
+  <v-app :dark="$root.$data.settings.theme == 'dark'">
     <v-navigation-drawer
       temporary
-      :dark="$root.$data.darkTheme"
+      :dark="$root.$data.settings.theme == 'dark'"
       v-model="drawer">
        <v-toolbar flat class="transparent">
         <v-list class="pa-0">

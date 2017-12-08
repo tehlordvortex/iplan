@@ -30,6 +30,7 @@ database.whenReady(() => window.vueApp = new Vue({
     showActions: false,
     actions: [],
     handlers: [],
-  	debug: true
+  	debug: true,
+    settings: database.getSettings()
   }
 }))
