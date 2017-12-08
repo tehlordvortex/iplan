@@ -1,6 +1,6 @@
 <template>
   <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
       <v-card flat v-if="!this.notFound">
         <v-card-title>
           <span style="font-size: 2em">{{ goal.name }}</span>

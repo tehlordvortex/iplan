@@ -5,7 +5,7 @@
         <v-toolbar flat class="purple" dark>
           <v-toolbar-title>Edit ToDo</v-toolbar-title>
         </v-toolbar>
-        <v-card class="primary white">
+        <v-card flat>
           <v-card-text>
             <v-layout row>
               <v-flex xs12>

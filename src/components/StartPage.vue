@@ -4,7 +4,7 @@
         <v-fab-transition>
           <v-flex v-if="ready" xs12 sm6 offset-sm3>
             <v-card v-if="noTodos" flat>
-              <v-card-title primary-title><span style="font-size: 2em">SO BLENK</span></v-card-title>
+              <v-card-title><span style="font-size: 2em">SO BLENK</span></v-card-title>
               <v-card-text>You have yet to create any ToDo, Ser User.</v-card-text>
               <v-card-actions>
                 <v-btn flat to="/create/todo" class="blue--text">Create</v-btn>
@@ -15,7 +15,7 @@
       </v-layout>
       <v-container grid-list-xl class="pa-0">
         <v-layout row>
-          <v-flex xs12>
+          <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
             <v-card v-if="!noTodos && ready" flat>
               <v-card-title><span style="font-size: 2em">Upcoming ToDos</span></v-card-title>
               <v-card-text>
@@ -30,9 +30,9 @@
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex xs12>
-            <v-card v-if="!noGoals && ready" class="primary white">
-              <v-card-title primary-title><span style="font-size: 2em">Upcoming Goals</span></v-card-title>
+          <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
+            <v-card v-if="!noGoals && ready" flat>
+              <v-card-title><span style="font-size: 2em">Upcoming Goals</span></v-card-title>
               <v-card-text>
                 <Goals v-if="upcomingGoals != ''" :ids="upcomingGoals"></Goals>
                 <span v-else>No goals in the near future!</span>

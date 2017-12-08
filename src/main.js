@@ -20,7 +20,7 @@ Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(VueTouch, {name: 'v-touch'})
 /* eslint-disable no-new */
-window.vueApp = new Vue({
+database.whenReady(() => window.vueApp = new Vue({
   el: '#app',
   router,
   template: '<App/>',
@@ -30,7 +30,6 @@ window.vueApp = new Vue({
     showActions: false,
     actions: [],
     handlers: [],
-  	debug: true,
-    darkTheme: true
+  	debug: true
   }
-})
+}))

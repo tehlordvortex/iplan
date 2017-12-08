@@ -7,6 +7,7 @@ import ToDos from '@/components/ToDos'
 import CreateGoal from '@/components/CreateGoal'
 import Goal from '@/components/Goal'
 import Goals from '@/components/Goals'
+import Settings from '@/components/Settings'
 
 Vue.use(Router)
 
@@ -46,6 +47,11 @@ export default new Router({
       path: '/edit/todo/:id',
       name: 'edittodo',
       component: EditToDo
+    },
+    {
+      path: '/settings',
+      name: 'settings',
+      component: Settings
     },
   ]
 })

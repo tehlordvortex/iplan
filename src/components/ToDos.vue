@@ -5,7 +5,7 @@
       	<v-progress-circular indeterminate class="primary--text"></v-progress-circular>
       </v-flex>
       <v-slide-y-transition>
-        <v-flex v-show="ready && !noTodos" class="todolist-flex" xs12 sm6 offset-sm3>
+        <v-flex v-show="ready && !noTodos" class="todolist-flex" xs12 sm10 offset-sm1 md8 offset-md2>
           <!--<v-card :flat="!!(ids || goal)" style="padding:0px">-->
           <v-card flat class="pa-0">
             <v-list>
@@ -130,13 +130,15 @@ export default {
     },
     mounted() {
       let items = this.$el.querySelectorAll(".todolist-flex")
-
-      /*if (this.ids || this.goal) {
-        items.forEach((node) => {
-          node.classList.toggle('sm6')
-          node.classList.tooggle('offset-sm3')
+      if (this.$root.$data.debug) console.log(items)
+      if (this.ids || this.goal) {
+        items.forEach((n) => {
+          n.classList.remove('sm10')
+          n.classList.remove('offset-sm1')
+          n.classList.remove('md8')
+          n.classList.remove('offset-md2')
         })
-      }*/
+      }
     },
     destroyed() {
       if (this.$root.$data.debug) console.log('destroyed ToDos component')

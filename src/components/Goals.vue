@@ -1,6 +1,6 @@
 <template>
   <v-layout row>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
       <!-- if there are specific ids being displayed, then flatten the card to fit into the UI -->
       <v-card v-if="this.goals.length > 0" flat class="pa-0">
         <v-list two-line>

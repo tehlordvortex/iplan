@@ -1,6 +1,7 @@
 <template>
-  <v-app :dark="$root.$data.darkTheme">
+  <v-app :dark="darkTheme">
     <v-navigation-drawer
+      temporary
       :dark="$root.$data.darkTheme"
       v-model="drawer">
        <v-toolbar flat class="transparent">
@@ -14,7 +15,7 @@
       </v-toolbar>
       <v-divider></v-divider>
       <v-list dense class="pt-0">
-        <v-list-tile :to="page.url" v-for="page in pages" :key="page.name">
+        <v-list-tile :to="page.url" v-if="!page.divider" v-for="page in pages" :key="page.name">
           <v-list-tile-action>
             <v-icon>{{ page.icon }}</v-icon>
           </v-list-tile-action>
@@ -22,6 +23,7 @@
             <v-list-tile-title>{{ page.name }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
+        <v-divider v-else></v-divider>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar fixed class="blue" id="main-toolbar" flat dark>
@@ -38,7 +40,7 @@
       <!--<v-container class="hidden-xs-only" fluid>
         <router-view></router-view>
       </v-container>-->
-      <v-container class="ma-0 pa-0" fluid>
+      <v-container class="condensed" fluid>
         <router-view></router-view>
       </v-container>
     </main>
@@ -60,6 +62,7 @@ export default {
   name: 'app',
   created() {
     this.$root.$data.database.whenReady(() => {
+      this.darkTheme = this.$root.$data.database.getSettings().theme == 'dark'
       setTimeout( () => this.showWelcome = true, 1000)
       setTimeout( () => this.ready = true, 2000)
     })
@@ -81,11 +84,20 @@ export default {
           name: "ToDos",
           url: '/todos',
           icon: 'list'
+        },
+        {
+          divider: true
+        },
+        {
+          name: "Settings",
+          url: '/settings',
+          icon: 'settings_cog'
         }
       ],
       drawer: false,
       ready: false,
-      showWelcome: false
+      showWelcome: false,
+      darkTheme: true
     }
   }
 }
@@ -101,5 +113,11 @@ export default {
   width: 100vw;
   z-index: 9001;
   text-align: center;
+}
+
+@media only screen and (max-width: 600px) {
+  .condensed {
+    padding: 0px;
+  }
 }
 </style>

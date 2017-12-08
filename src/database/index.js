@@ -3,7 +3,7 @@ import LokiIndexedAdapter from 'lokijs/src/loki-indexed-adapter.js'
 class DB {
 	constructor() {
 		this._ready = false
-		this._readyCallbacks = [];
+		this._readyCallbacks = []
 		this._idbAdapter = new LokiIndexedAdapter()
 		this._db = new Loki('iplan-data.db', {
 			autoload: true,
@@ -20,8 +20,10 @@ class DB {
 			this._todos = this._db.addCollection('todos')
 		}
 		if (!(this._goals = this._db.getCollection('goals'))) {
-
 			this._goals = this._db.addCollection('goals')
+		}
+		if (!(this._settings = this._db.getCollection('settings'))) {
+			this._settings = this._db.addCollection('settings')
 		}
 		this._ready = true;
 		this._readyCallbacks.reduce((_, cb) => cb(this), 0)
@@ -34,13 +36,28 @@ class DB {
 		else this._readyCallbacks.push(cb)
 	}
 	getDB() {
-		return this._db;
+		return this._db
 	}
 	getTodos() {
-		return this._todos;
+		return this._todos
 	}
 	getGoals() {
-		return this._goals;
+		return this._goals
+	}
+	getSettings() {
+		let results = this._settings.find({})
+		if (results && results.length > 0)
+			return results[0]
+		else {
+			let settings = {
+				theme: "dark"
+			}
+			this._settings.insert(settings)
+			return settings
+		}
+	}
+	updateSettings(settings) {
+		this._settings.update(settings)
 	}
 	getGoalsArray() {
 		return this._goals.find({})
@@ -81,7 +98,7 @@ class DB {
 	}
 	addToDo(todoObj, callback) {
 		if (!this._todos) {
-			callback(true, null);
+			callback(true, null)
 			return;
 		}
 		var todo = {
@@ -126,5 +143,5 @@ class DB {
 		this._todos.remove(todo)
 	}
 }
-let dbInstance = new DB();
-export default dbInstance;
+let dbInstance = new DB()
+export default dbInstance
