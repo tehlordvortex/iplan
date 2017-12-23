@@ -13,7 +13,7 @@ var webpackConfig = require('./webpack.prod.conf')
 
 
 
-var spinner = ora('building for production' + ((process.env.BUILD_GH_PAGES) ? ' (gh-pages)' : '') + '...' )
+var spinner = ora('building for production (live-demo)...')
 spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {
