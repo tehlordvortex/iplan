@@ -1,8 +1,8 @@
 <template>
-  <v-app :dark="$root.$data.settings.theme == 'dark'">
+  <v-app :dark="darkTheme">
     <v-navigation-drawer
       temporary
-      :dark="$root.$data.settings.theme == 'dark'"
+      :dark="darkTheme"
       v-model="drawer">
        <v-toolbar flat class="transparent">
         <v-list class="pa-0">
@@ -30,10 +30,12 @@
       <v-toolbar-side-icon @click.native.stop="drawer = !drawer"></v-toolbar-side-icon>
       <v-toolbar-title>iPlan</v-toolbar-title>
       <v-spacer></v-spacer>
-      <template v-for="action in $root.$data.actions">
-        <v-btn icon :key="action.action" v-show="$root.$data.showActions" @click="$root.$data.handlers.forEach((handler, i) => handler(action, i))">
-          <v-icon>{{action.icon}}</v-icon>
-        </v-btn>
+      <template v-for="id in actionIds">
+        <span v-for="action in actions[id].actions">
+          <v-btn icon :key="action.action" v-show="shownActionIds.indexOf(id) > -1" @click="actionTriggered(action, id)">
+            <v-icon>{{action.icon}}</v-icon>
+          </v-btn>
+        </span>
       </template>
     </v-toolbar>
     <main>
@@ -58,14 +60,27 @@
 </template>
 
 <script>
+import uuidv4 from 'uuid/v4'
 export default {
   name: 'app',
   created() {
     this.$root.$data.database.whenReady(() => {
+      eventBus.$on('settings-change', this.settingsChanged);
+      eventBus.$on('register-actions', this.registerActions);
+      eventBus.$on('unregister-actions', this.unregisterActions);
+      eventBus.$on('show-actions', this.showActions)
+      eventBus.$on('hide-actions', this.hideActions)
       this.darkTheme = this.$root.$data.database.getSettings().theme == 'dark'
       setTimeout( () => this.showWelcome = true, 1000)
       setTimeout( () => this.ready = true, 2000)
     })
+  },
+  destroyed() {
+    eventBus.$off('settings-change', this.settingsChanged);
+    eventBus.$off('register-actions', this.registerActions);
+    eventBus.$off('unregister-actions', this.unregisterActions);
+    eventBus.$off('show-actions', this.showActions)
+    eventBus.$off('hide-actions', this.hideActions)
   },
   data() {
     return {
@@ -97,8 +112,64 @@ export default {
       drawer: false,
       ready: false,
       showWelcome: false,
-      darkTheme: true
+      darkTheme: true,
+      showTheActions: false,
+      actions: {},
+      actionIds: [],
+      shownActionIds: []
     }
+  },
+  methods: {
+    actionTriggered(action, id) {
+      if (this.actions && Object.keys(this.actions).indexOf(id) > -1 && this.actions[id].handler) {
+        this.actions[id].handler(action);
+      }
+    },
+    settingsChanged(newSettings) {
+      this.darkTheme = newSettings.theme == 'dark';
+    },
+    registerActions(actions) {
+        if (this.$root.$data.debug) console.log(`register-actions: ${actions}`);
+        let id = uuidv4();
+        this.actions[id] = {
+          actions: actions.actions,
+          handler: actions.handler,
+          showActions: false
+        };
+        actions.callback(id);
+        this.actionIds.push(id);
+        if (this.$root.$data.debug) console.log(this.actions);
+        //eventBus.$emit('actions-registered', id);
+      },
+    unregisterActions(id) {
+        this.actions[id] = undefined;
+        this.actionIds = this.actionIds.filter((i) => i != id);
+        //this.showActions = false;
+      },
+    showActions(id) {
+        if (this.$root.$data.debug) {
+          console.log(`show-actions ${id}`);
+          console.log(this.actions[id]);
+          console.log(this.actionIds.indexOf(id));
+        }
+        if (Object.keys(this.actions).indexOf(id) > -1) {
+          this.actions[id].showActions = true;
+          if (this.shownActionIds.indexOf(id) == -1)
+            this.shownActionIds.push(id);
+        }
+        else {
+          if (this.$root.$data.debug) console.log(`already unregistered ${id}`);
+        }
+        //this.showTheActions = true;
+      },
+    hideActions(id) {
+        if (Object.keys(this.actions).indexOf(id) > -1) {
+          if (this.shownActionIds.indexOf(id) > -1)
+            this.shownActionIds = this.shownActionIds.filter((i) => i != id);
+          this.actions[id].showActions = false;
+        }
+        //this.showTheActions = false;
+      }
   }
 }
 </script>

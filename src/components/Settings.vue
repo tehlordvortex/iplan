@@ -51,6 +51,7 @@ export default {
     saveSettings() {
       this.settings.theme = this.theme
       this.$root.$data.database.updateSettings(this.settings)
+      eventBus.$emit('settings-change', this.settings);
       this.$router.go(-1)
     }
   }
