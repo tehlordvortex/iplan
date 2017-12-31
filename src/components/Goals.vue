@@ -33,7 +33,7 @@
           </template>
         </v-list>
       </v-card>
-      <v-card v-else>
+      <v-card flat v-else>
         <v-card-title><span style="font-size: 2em">No Goals</span></v-card-title>
         <v-card-text>You seem to have no goals in life.</v-card-text>
         <v-card-actions>
