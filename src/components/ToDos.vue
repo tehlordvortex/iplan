@@ -122,9 +122,14 @@ export default {
               action: 'makegoal',
               icon: 'done_all'
             })
-          this.$root.$data.actions = this.actions
-          this.$root.$data.handlers.push(this.actionHandler)
-          if (this.$root.$data.debug) console.log(this.$root.$data.handlers)
+          let actionsObject = {}
+          actionsObject.actions = this.actions
+          actionsObject.handler = this.actionHandler
+          actionsObject.callback = (id) => {
+            this.actionsId = id;
+          }
+          eventBus.$emit('register-actions', actionsObject)
+          if (this.$root.$data.debug) console.log(actionsObject)
           this.buildData()
       })
     },
@@ -141,43 +146,42 @@ export default {
       }
     },
     destroyed() {
-      if (this.$root.$data.debug) console.log('destroyed ToDos component')
-      this.$root.$data.showActions = false
-      //this.$root.$data.actions = []
-      this.$root.$data.handlers = this.$root.$data.handlers.filter((e) => e != this.actionHandler)
+      if (this.$root.$data.debug) console.log('destroying ToDos component')
+      eventBus.$emit('unregister-actions', this.actionsId)
     },
     data() {
       return {
-          actions: [
-          {
-            text: 'Delete',
-            action: 'delete',
-            icon: 'delete',
-          },
-          ],
-          actionSelected: "",
-          selected: [],
-          className: {},
-          ready: false,
-          noTodos: false,
-          showDeleteConfirm: false,
-          showFab: false,
-          headers: [
-            { text: 'Name', value: 'name' },
-            { text: 'Due Date', value: 'dueDate'},
-            { text: 'Due Time', value: 'dueTime'},
-            { text: 'Done', value: 'done'},
-            { text: 'Actions', value: 'actions' }
-          ],
-          items: [],
-          callbacks: {
-            select: this.select,
-            update: this.updateToDo,
-            delete_: this.deleteToDo,
-            edit: this.editToDo,
-            isSelected: this.isToDoSelected,
-            showSelect: false
-          }
+        actions: [
+        {
+          text: 'Delete',
+          action: 'delete',
+          icon: 'delete',
+        },
+        ],
+        actionSelected: "",
+        selected: [],
+        className: {},
+        ready: false,
+        noTodos: false,
+        showDeleteConfirm: false,
+        showFab: false,
+        headers: [
+          { text: 'Name', value: 'name' },
+          { text: 'Due Date', value: 'dueDate'},
+          { text: 'Due Time', value: 'dueTime'},
+          { text: 'Done', value: 'done'},
+          { text: 'Actions', value: 'actions' }
+        ],
+        items: [],
+        callbacks: {
+          select: this.select,
+          update: this.updateToDo,
+          delete_: this.deleteToDo,
+          edit: this.editToDo,
+          isSelected: this.isToDoSelected,
+          showSelect: false
+        },
+        actionsId: ''
       }
     },
     methods: {
@@ -298,20 +302,26 @@ export default {
         if(this.selected.indexOf(item) >= 0) {
           document.getElementsByName(item._id).forEach((e) => e.classList.remove("grey"))
           this.selected = this.selected.filter((a) => a != item)
+          let length = this.selected.length
+          if (this.$root.$data.debug) console.log(`selected array length: ${length}`)
+          if (length == 0) { // all items deselected, hide the actions
+            eventBus.$emit('hide-actions', this.actionsId);
+          }
           if (this.$root.$data.debug) console.log("de-selected: " + item)
         }
         else {
           document.getElementsByName(item._id).forEach((e) => e.classList.add("grey"))
-          this.selected.push(item)
-          if (this.$root.$data.debug) console.log("selected: " + item)
+          let index = this.selected.push(item)
+          if (index == 1) { // first item selected, show the actions
+            eventBus.$emit('show-actions', this.actionsId);
+          }
+          if (this.$root.$data.debug) console.log(`selected ${item} ${index}`);
         }
-        this.$root.$data.showActions = this.selected.length > 0
       },
       isToDoSelected: function(todo) {
-        if(this.$root.$data.debug) console.log(todo)
-        var found = false
-        this.selected.forEach((item) => found = item === todo)
-        return found
+        let selected = this.selected.indexOf(todo) > -1
+        if(this.$root.$data.debug) console.log("is " + todo + "selected: " + selected);
+        return selected;
       }
   },
   components: {

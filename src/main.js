@@ -20,17 +20,19 @@ Vue.config.productionTip = false
 Vue.use(Vuetify)
 Vue.use(VueTouch, {name: 'v-touch'})
 /* eslint-disable no-new */
-database.whenReady(() => window.vueApp = new Vue({
-  el: '#app',
-  router,
-  template: '<App/>',
-  components: { App },
-  data: {
-    database: database,
-    showActions: false,
-    actions: [],
-    handlers: [],
-  	debug: true,
-    settings: database.getSettings()
-  }
-}))
+//database.whenReady(() => {
+  window.vueApp = new Vue({
+    el: '#app',
+    router,
+    template: '<App/>',
+    components: { App },
+    data: {
+      database: database,
+      showActions: false,
+      actions: [],
+      handlers: [],
+    	debug: true
+    }
+  })
+  window.eventBus = window.vueApp
+//})
