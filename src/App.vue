@@ -106,7 +106,7 @@ export default {
         {
           name: "Settings",
           url: '/settings',
-          icon: 'settings_cog'
+          icon: 'settings'
         }
       ],
       drawer: false,
