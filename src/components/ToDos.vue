@@ -108,11 +108,12 @@ export default {
       if (this.$root.$data.debug) console.log('created ToDos component')
       this.$root.$data.database.whenReady(() => {
           this.noTodos = this.$root.$data.database.getTodos().count() < 1
-          if (this.noTodos) {
+          if (this.noTodos && !(this.ids || this.goal)) {
               this.ready = true
               this.$router.push({name: 'dashboard'})
               return
           }
+          this.noTodos = false
 
           // makegoal action should not be available when viewing a goal/specific set of ids
           if (this.$root.$data.debug) console.log("ids or goals not specified", !(this.ids || this.goal))
@@ -236,14 +237,14 @@ export default {
         this.$root.$data.database.updateToDo(todo)
         this.buildData()
       },
-      deleteToDo: function (todo) {
+      deleteToDo: function (todo, noConfirm) {
         if(this.$root.$data.debug) console.log(todo)
+        if (noConfirm) {
+          this.$root.$data.database.deleteToDo(todo);
+          return;
+        }
         this.showDeleteConfirm = true
         this.confirmCallback = () => {
-          if(this.goal) {
-            this.goal.todo_ids = this.goal.todo_ids.filter((id) => id != todo._id)
-            this.$root.$data.database.updateGoal(this.goal)
-          }
           this.$root.$data.database.deleteToDo(todo)
           this.showDeleteConfirm = false
           this.confirmCallback = undefined
@@ -264,17 +265,7 @@ export default {
           if (this.$root.$data.debug) console.log("delete popup")
           this.showDeleteConfirm = true
           this.confirmCallback = () => {
-            for (var i = 0;i < this.selected.length;i++) {
-              var todo = this.selected[i]
-              if (this.$root.$data.debug) console.log(todo)
-              // if we're attached to a goal, remove the todo(s) from the goal
-              // TODO: remove todos attached to a goal even when not called from Goal.vue
-              if (this.goal) {
-                this.goal.todo_ids = this.goal.todo_ids.filter((value, index) => value != todo._id)
-                this.$root.$data.database.whenReady((db) => db.updateGoal(this.goal))
-              }
-              this.$root.$data.database.deleteToDo(todo)
-            }
+            this.selected.forEach((todo) => this.$root.$data.database.deleteToDo(todo));
             this.$root.$data.showActions = false
             this.selected = []
             this.showDeleteConfirm = false
