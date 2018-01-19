@@ -34,7 +34,7 @@ export default new Router({
       component: Goal
     },
     {
-    	path: '/create/todo',
+    	path: '/create/todo/:goalId?',
     	name: 'createtodo',
     	component: CreateToDo
     },
