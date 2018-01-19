@@ -50,7 +50,7 @@
     <div class="hidden-xs-only">
       <v-touch v-on:press="callbacks.select(todo)">
         <v-list-tile :name="todo._id" @contextmenu.stop.prevent="" :ripple="false">
-            <v-list-tile-action>
+          <v-list-tile-action>
             <v-checkbox
               primary
               hide-details
@@ -68,34 +68,34 @@
               <span v-show="todo.dueTime">{{ todo.dueTime }}</span>
             </v-list-tile-sub-title>
           </v-list-tile-content>
-            <v-btn
-                flat
-                class="xs1 sm1"
-                icon
-                @click.native="callbacks.delete_(todo)"
-              >
-                <v-icon>delete</v-icon>
-              </v-btn>
-              <v-btn
-                flat
-                icon
-                class="xs1 sm1"
-                @click.native="callbacks.edit(todo)"
-              >
-                <v-icon>create</v-icon>
-              </v-btn>
+          <v-btn
+            flat
+            class="xs1 sm1"
+            icon
+            @click.native="callbacks.delete_(todo)"
+          >
+            <v-icon>delete</v-icon>
+          </v-btn>
+          <v-btn
+            flat
+            icon
+            class="xs1 sm1"
+            @click.native="callbacks.edit(todo)"
+          >
+            <v-icon>create</v-icon>
+          </v-btn>
+          <v-list-tile-action v-if="callbacks.showSelect">
               <v-slide-x-transition>
                 <v-checkbox
                   class="hidden-xs-only"
                   primary
                   hide-details
-                  style="display: inline"
-                  v-if="callbacks.showSelect"
                   :input-value="selected"
                   @click.native="select"
                 >
                 </v-checkbox>
               </v-slide-x-transition>
+          </v-list-tile-action>
         </v-list-tile>
       </v-touch>
     </div>
