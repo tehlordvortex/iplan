@@ -1,5 +1,6 @@
 import Loki from 'lokijs'
 import LokiIndexedAdapter from 'lokijs/src/loki-indexed-adapter.js'
+import { deleteFromArray, debug } from '../helpers.js'
 class DB {
 	constructor() {
 		this._ready = false
@@ -56,8 +57,15 @@ class DB {
 			return settings
 		}
 	}
-	updateSettings(settings) {
-		this._settings.update(settings)
+	updateSettings(settings, callback) {
+		try {
+			this._settings.update(settings)
+			if (callback) callback(false);
+		} catch (e) {
+			if (callback) callback(true, e);
+			else if (debug) throw e;
+			else { } // TODO: Add logging/telemetry in production mode
+		}
 	}
 	getGoalsArray() {
 		return this._goals.find({})
@@ -90,10 +98,18 @@ class DB {
 			callback(false, goal._id)
 		}
 	}
-	updateGoal(goal) {
-		this._goals.update(goal)
+	updateGoal(goal, callback) {
+		try {
+			this._goals.update(goal);
+			if (callback) callback(false);
+		} catch (e) {
+			if (callback) callback(true, e);
+			else if (debug) throw e;
+			else { } // TODO: Add logging/telemetry in production mode
+		}
 	}
 	deleteGoal(goal) {
+		goal.todo_ids.forEach((id) => this.deleteToDo(id))
 		this._goals.remove(goal)
 	}
 	addToDo(todoObj, callback) {
@@ -139,8 +155,25 @@ class DB {
 	updateToDo(todo) {
 		this._todos.update(todo)
 	}
-	deleteToDo(todo) {
+	deleteToDo(todo, callback) {
+		if (typeof todo == "string") {
+			todo = this.getToDo(todo);
+		}
+		if (!todo) {
+			if (callback) callback(true, "ToDo does not exist");
+			return;
+		}
+		if (todo.goalId) {
+			if (debug) console.log(`detaching ${todo._id} from it's goal`);
+			let goal = this.getGoal(todo.goalId);
+			if (goal) {
+				goal.todo_ids = deleteFromArray(goal.todo_ids, todo._id);
+				if (debug) console.log(goal.todo_ids);
+				this.updateGoal(goal);
+			}
+		}
 		this._todos.remove(todo)
+		if (callback) callback(false);
 	}
 }
 let dbInstance = new DB()
