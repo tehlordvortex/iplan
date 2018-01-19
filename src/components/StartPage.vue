@@ -1,19 +1,17 @@
 <template>
     <div id="content">
-      <v-layout row>
-        <v-fab-transition>
-          <v-flex v-if="ready" xs12 sm6 offset-sm3>
+      <v-container grid-list-xl class="pa-0">
+        <v-layout row>
+          <v-flex v-if="ready" xs12 sm10 offset-sm1 md8 offset-md2>
             <v-card v-if="noTodos" flat>
-              <v-card-title><span style="font-size: 2em">SO BLENK</span></v-card-title>
-              <v-card-text>You have yet to create any ToDo, Ser User.</v-card-text>
+              <v-card-title><span style="font-size: 2em">No ToDos</span></v-card-title>
+              <v-card-text>You have yet to create any ToDo.</v-card-text>
               <v-card-actions>
                 <v-btn flat to="/create/todo" class="blue--text">Create</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
-        </v-fab-transition>
-      </v-layout>
-      <v-container grid-list-xl class="pa-0">
+        </v-layout>
         <v-layout row>
           <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
             <v-card v-if="!noTodos && ready" flat>
