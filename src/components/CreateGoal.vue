@@ -1,7 +1,7 @@
 <template>
   <v-slide-y-reverse-transition>
   	<v-layout row>
-      <v-flex xs12 sm10 offset-sm1>
+      <v-flex xs12 sm6 offset-sm3>
         <v-toolbar flat class="purple" dark>
           <v-toolbar-title>New Goal</v-toolbar-title>
         </v-toolbar>
@@ -115,8 +115,12 @@ export default {
       if (!this.name || !this.ids || this.ids.length == 0) return;
       let that = this;
       this.$root.$data.database.whenReady(() => this.$root.$data.database.addGoal(this.name, this.dueDate, this.ids, (err, id) => {
-        if (!err)
-          that.$router.push({name: 'goal', params: {id: id}})
+        if(!err) {
+          that.$router.push({name: 'goal', params: {id: id}});
+        }
+        else {
+          alert("Couldn't create goal!");
+        }
       }))
       
     },
