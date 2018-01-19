@@ -4,7 +4,8 @@
       <v-card flat v-if="!this.notFound">
         <v-card-title>
           <span style="font-size: 2em">{{ goal.name }}</span>
-          <div>
+          <div class="right">
+            <v-btn icon flat :to="'/edit/goal/' + goal._id"><v-icon>create</v-icon></v-btn>
             <v-btn icon flat @click.native.stop="deleteGoal"><v-icon>delete</v-icon></v-btn>
           </div>
         </v-card-title>
@@ -13,7 +14,21 @@
             <v-icon>event</v-icon>
             <span>{{ goal.dueDate }}</span>
            </span>
-          <ToDos v-bind:goal="goal"></ToDos>
+          <ToDos v-if="goal.todo_ids.length > 0" v-bind:goal="goal"></ToDos>
+          <v-layout v-else row>
+            <v-flex xs1 offset-xs4 sm2 offset-sm5>
+              <v-btn
+                fab
+                flat
+                large
+                class="pink"
+                xs2
+                offset-xs10
+                :to="'/create/todo/' + goal._id">
+                <v-icon>add</v-icon>
+              </v-btn>
+            </v-flex>
+          </v-layout>
         </v-card-text>
       </v-card>
       <v-card flat v-else>
@@ -61,21 +76,13 @@ export default {
   methods: {
     buildData(db) {
       this.goal = db.getGoal(this.$route.params.id)
-      if(this.$root.$data.debug) console.log(this.goal)
+      if(this.$root.$data.debug) console.log(this.goal.todo_ids)
       if (!this.goal)
         this.notFound = true
     },
     deleteGoal() {
       this.showDeleteConfirm = true
       this.confirmCallback = () => {
-        this.goal.todo_ids.forEach((todoId) => {
-          var todo = this.$root.$data.database.getToDo(todoId)
-          if(this.$root.$data.debug) console.log(todo)
-          if(!todo) return
-          if (todo.goalId && todo.goalId == this.goal._id) {
-            this.$root.$data.database.deleteToDo(todo)
-          }
-        })
         this.$root.$data.database.deleteGoal(this.goal)
         this.showDeleteConfirm = false
         this.$router.go(-1)
