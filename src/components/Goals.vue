@@ -1,11 +1,11 @@
 <template>
   <v-layout row>
-    <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
+    <v-flex :class="classList">
       <!-- if there are specific ids being displayed, then flatten the card to fit into the UI -->
       <v-card v-if="this.goals.length > 0" flat class="pa-0">
         <v-list two-line>
           <template v-for="goal in goals">
-            <v-list-tile v-bind:key="goal.name" @click.native.stop="viewGoal(goal._id)" :ripple="false">
+            <v-list-tile v-bind:key="goal.name" :to="'/goal/' + goal._id" ripple>
               <v-list-tile-content>
                 <v-list-tile-title v-html="goal.name"></v-list-tile-title>
                 <v-list-tile-sub-title v-show="goal.dueDate">
@@ -65,10 +65,13 @@ export default {
   name: 'goals',
   props: ['ids'],
   created() {
-    if(!this.ids)
-      this.$root.$data.database.whenReady(() => 
-        this.goals = this.$root.$data.database.getGoalsArray())
-    else {
+    if(!this.ids) {
+      this.$root.$data.database.whenReady(() => {
+        this.goals = this.$root.$data.database.getGoalsArray()
+      })
+      this.classList = ["xs12", "sm10", "offset-sm1", "md8", "offset-md2"]
+    } else {
+      this.classList = ["xs12"]
       this.goals = []
       this.ids.split(",").forEach((id) => this.goals.push(this.$root.$data.database.getGoal(id)))
     }
@@ -76,7 +79,8 @@ export default {
   data() {
     return {
       goals: [],
-      showDeleteConfirm: false
+      showDeleteConfirm: false,
+      classList: []
     }
   },
   methods: {
