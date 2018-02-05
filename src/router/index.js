@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import StartPage from '@/components/StartPage'
 import CreateToDo from '@/components/CreateToDo'
 import EditToDo from '@/components/EditToDo'
+import EditGoal from '@/components/EditGoal'
 import ToDos from '@/components/ToDos'
 import CreateGoal from '@/components/CreateGoal'
 import Goal from '@/components/Goal'
@@ -47,6 +48,11 @@ export default new Router({
       path: '/edit/todo/:id',
       name: 'edittodo',
       component: EditToDo
+    },
+    {
+      path: '/edit/goal/:id',
+      name: 'editgoal',
+      component: EditGoal
     },
     {
       path: '/settings',
