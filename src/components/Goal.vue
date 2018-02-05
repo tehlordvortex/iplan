@@ -4,10 +4,9 @@
       <v-card flat v-if="!this.notFound">
         <v-card-title>
           <span style="font-size: 2em">{{ goal.name }}</span>
-          <div class="right">
-            <v-btn icon flat :to="'/edit/goal/' + goal._id"><v-icon>create</v-icon></v-btn>
-            <v-btn icon flat @click.native.stop="deleteGoal"><v-icon>delete</v-icon></v-btn>
-          </div>
+          <v-spacer></v-spacer>
+          <v-btn icon flat :to="'/edit/goal/' + goal._id"><v-icon>create</v-icon></v-btn>
+          <v-btn icon flat @click.native.stop="deleteGoal"><v-icon>delete</v-icon></v-btn>
         </v-card-title>
         <v-card-text>
            <span v-show="goal.dueDate">
