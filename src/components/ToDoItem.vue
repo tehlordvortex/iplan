@@ -4,7 +4,7 @@
       <v-touch v-on:press="callbacks.select(todo)">
         <v-list-group v-model="showActions">
           <v-touch v-on:tap="click" slot="item">
-            <v-list-tile :name="todo._id" v-on:tap="click" @contextmenu.stop.prevent="null" :ripple="false">
+            <v-list-tile :name="todo._id" @contextmenu.prevent>
               <v-list-tile-action>
                 <v-checkbox
                   primary
@@ -28,7 +28,7 @@
               </v-list-tile-action>
             </v-list-tile>
           </v-touch>
-          <v-list-tile @click="">
+          <v-list-tile @contextmenu.prevent>
             <v-btn
               flat
               class="xs1 sm1"
