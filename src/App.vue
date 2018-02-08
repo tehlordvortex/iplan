@@ -3,7 +3,8 @@
     <v-navigation-drawer
       temporary
       :dark="darkTheme"
-      v-model="drawer">
+      v-model="drawer"
+      >
        <v-toolbar flat class="transparent">
         <v-list class="pa-0">
           <v-list-tile>
@@ -15,7 +16,7 @@
       </v-toolbar>
       <v-divider></v-divider>
       <v-list dense class="pt-0">
-        <v-list-tile :to="page.url" v-if="!page.divider" v-for="page in pages" :key="page.name">
+        <v-list-tile :to="page.url" v-if="page.url && !page.bottom" v-for="page in pages" :key="page.name">
           <v-list-tile-action>
             <v-icon>{{ page.icon }}</v-icon>
           </v-list-tile-action>
@@ -23,7 +24,18 @@
             <v-list-tile-title>{{ page.name }}</v-list-tile-title>
           </v-list-tile-content>
         </v-list-tile>
-        <v-divider v-else></v-divider>
+        <div class="bottom" v-else-if="page.bottom">
+          <v-divider v-if="page.divider"></v-divider>
+          <v-list-tile :to="page.url">
+            <v-list-tile-action>
+              <v-icon>{{ page.icon }}</v-icon>
+            </v-list-tile-action>
+            <v-list-tile-content>
+              <v-list-tile-title>{{ page.name }}</v-list-tile-title>
+            </v-list-tile-content>
+          </v-list-tile>
+        </div>
+        <v-divider v-else-if="page.divider"></v-divider>
       </v-list>
     </v-navigation-drawer>
     <v-toolbar fixed class="blue" id="main-toolbar" flat dark>
@@ -101,12 +113,11 @@ export default {
           icon: 'list'
         },
         {
-          divider: true
-        },
-        {
           name: "Settings",
           url: '/settings',
-          icon: 'settings'
+          icon: 'settings',
+          divider: true,
+          bottom: true
         }
       ],
       drawer: false,
@@ -184,6 +195,13 @@ export default {
   width: 100vw;
   z-index: 9001;
   text-align: center;
+}
+
+
+.bottom {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 @media only screen and (max-width: 600px) {
