@@ -5,11 +5,21 @@ import App from './App'
 import router from './router'
 import Vuetify from 'vuetify'
 import 'vuetify/dist/vuetify.min.css'
+import colors from 'vuetify/es5/util/colors'
+import VueFirestore from 'vue-firestore'
 
-Vue.use(Vuetify)
+window.Vue = Vue
+window.VueFirestore = VueFirestore
+Vue.use(Vuetify, {
+  theme: {
+    primary: colors.blue.base,
+    secondary: colors.purple.base,
+    accent: colors.pink.base
+  }
+})
+Vue.use(VueFirestore)
 
 Vue.config.productionTip = false
-
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
