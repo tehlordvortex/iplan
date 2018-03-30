@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <v-navigation-drawer
+      temporary
       v-model="drawer"
       enable-resize-watcher
       fixed
@@ -73,9 +74,6 @@
     <v-content>
       <router-view/>
     </v-content>
-    <v-footer fixed app>
-      <span>&copy; 2017</span>
-    </v-footer>
   </v-app>
 </template>
 
@@ -85,7 +83,7 @@ export default {
   created () {
     let self = this
     firebase.auth().onAuthStateChanged(function (user) {
-      console.log(user)
+      // console.log(user)
       self.currentUser = user
     })
   },
