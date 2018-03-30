@@ -5,7 +5,7 @@
         <v-card>
           <v-card-title class="title">Todos</v-card-title>
           <v-card-text>
-            <v-list two-line>
+            <v-list  v-if="!smallScreen">
               <v-list-tile ripple v-for="(todo, index) in todos" :key="index">
                 <v-list-tile-action>
                   <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
@@ -14,17 +14,52 @@
                   <v-list-tile-title v-if="!editingTodo || toEdit != todo['.key']">{{ todo.task }}</v-list-tile-title>
                   <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit == todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
                 </v-list-tile-content>
-                <v-list-tile-action>
+                <!-- <v-list-tile-action> -->
                   <v-btn icon flat @click="editTodo(todo)"><v-icon>create</v-icon></v-btn>
                   <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
-                </v-list-tile-action>
+                <!-- </v-list-tile-action> -->
               </v-list-tile>
+            </v-list>
+            <v-list v-else>
+              <v-list-group v-for="(todo, index) in todos" :key="index" >
+                <v-list-tile slot="activator">
+                  <v-list-tile-action>
+                    <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
+                  </v-list-tile-action>
+                  <v-list-tile-content>
+                    <v-list-tile-title v-if="!editingTodo || toEdit != todo['.key']">{{ todo.task }}</v-list-tile-title>
+                    <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit == todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
+                  </v-list-tile-content>
+                </v-list-tile>
+                <v-list-tile>
+                  <v-btn icon flat @click="editTodoMobile(todo)"><v-icon>create</v-icon></v-btn>
+                  <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
+                  <!-- </v-list-tile-content> -->
+                </v-list-tile>
+              </v-list-group>
             </v-list>
             <v-text-field v-model="newTodo" @keyup.enter="addTodo" />
           </v-card-text>
         </v-card>
       </v-flex>
     </v-layout>
+    <v-dialog
+      v-model="editDialog"
+      v-if="editDialog"
+    >
+      <v-card>
+        <v-card-title class="title">Edit Todo</v-card-title>
+        <v-card-text>
+          <v-form>
+            <v-text-field v-model="todoToEdit.task"/>
+          </v-form>
+        </v-card-text>
+        <v-card-actions>
+          <v-btn flat class="blue--text" @click="updateTodo(todoToEdit)">Done</v-btn>
+          <v-btn flat class="pink--text" @click="stopEditing">Cancel</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-container>
 </template>
 
@@ -48,9 +83,11 @@ export default {
   data: () => ({
     editingTodo: false,
     toEdit: '',
+    todoToEdit: null,
     todos: [
     ],
-    newTodo: ''
+    newTodo: '',
+    editDialog: false
   }),
   methods: {
     addTodo () {
@@ -86,6 +123,18 @@ export default {
     stopEditing () {
       this.editingTodo = false
       this.toEdit = ''
+      this.todoToEdit = null
+      this.editDialog = false
+    },
+    editTodoMobile (todo) {
+      this.editDialog = true
+      this.todoToEdit = todo
+    }
+  },
+  computed: {
+    smallScreen () {
+      console.log(this.$vuetify.breakpoint.name)
+      return this.$vuetify.breakpoint.name === 'xs'
     }
   }
 }
