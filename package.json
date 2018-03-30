@@ -13,7 +13,9 @@
   "dependencies": {
     "vuetify": "^1.0.0",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1"
+    "vue-router": "^3.0.1",
+    "firebase": "^4.12.1",
+    "vue-firestore": "^0.2.6"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.5",
