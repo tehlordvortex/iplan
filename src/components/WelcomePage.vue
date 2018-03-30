@@ -20,16 +20,20 @@
 
 <script>
 import { firebase } from '@firebase/app'
-import ui from '@/authui'
+import * as firebaseui from 'firebaseui'
+// import ui from '@/authui'
 import { fbUIConfig } from '@/config'
 export default {
   data: () => ({
-
+    ui: null
   }),
   mounted () {
-    ui.start('#firebaseui-auth-container', fbUIConfig)
+    // let ui = this.ui || new firebaseui.auth.AuthUI(firebase.auth())
+    this.ui.reset()
+    this.ui.start('#firebaseui-auth-container', fbUIConfig)
   },
   created () {
+    this.ui = new firebaseui.auth.AuthUI(firebase.auth())
     if (firebase.auth().currentUser) {
       this.$router.replace('todos')
     } else {

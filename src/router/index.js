@@ -30,6 +30,7 @@ const router = new Router({
 })
 
 router.beforeEach((to, from, next) => {
+  // console.log(firebase.app())
   let currentUser = firebase.auth().currentUser
   let requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 

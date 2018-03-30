@@ -8,9 +8,11 @@ import 'vuetify/dist/vuetify.min.css'
 import 'firebaseui/dist/firebaseui.css'
 import colors from 'vuetify/es5/util/colors'
 import VueFirestore from 'vue-firestore'
+import { firebase } from '@firebase/app'
+import '@firebase/firestore'
+import '@firebase/auth'
+import { fbConfig } from '@/config'
 
-window.Vue = Vue
-window.VueFirestore = VueFirestore
 Vue.use(Vuetify, {
   theme: {
     primary: colors.blue.base,
@@ -19,6 +21,9 @@ Vue.use(Vuetify, {
   }
 })
 Vue.use(VueFirestore)
+
+firebase.initializeApp(fbConfig)
+// console.log(firebase)
 
 Vue.config.productionTip = false
 /* eslint-disable no-new */

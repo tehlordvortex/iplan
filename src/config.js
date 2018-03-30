@@ -13,13 +13,13 @@ export const fbConfig = {
 }
 
 export const fbUIConfig = {
-  // signInSuccessUrl: '#/loginRedirect',
+  signInSuccessUrl: '#/todos',
   callbacks: {
     signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-      return false
+      return true
     }
   },
-  signInFlow: 'popup',
+  signInFlow: 'redirect',
   signInOptions: [
     // Leave the lines as is for the providers you want to offer your users.
     {

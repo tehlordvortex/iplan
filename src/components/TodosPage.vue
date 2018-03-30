@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout row>
-      <v-flex xs12>
+      <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
         <v-card>
           <v-card-title class="title">Todos</v-card-title>
           <v-card-text>
@@ -29,8 +29,10 @@
 </template>
 
 <script>
-import { firestore } from '@/fbase'
+// import { firestore } from '@/fbase'
 import { firebase } from '@firebase/app'
+// let firestore = null
+
 export default {
   created () {
     if (!firebase.auth().currentUser) {
@@ -38,6 +40,7 @@ export default {
     }
   },
   firestore () {
+    let firestore = firebase.firestore()
     return {
       todos: firestore.collection(firebase.auth().currentUser.uid)
     }
