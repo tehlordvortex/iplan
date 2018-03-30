@@ -30,12 +30,16 @@
 
 <script>
 import { firestore } from '@/fbase'
+import { firebase } from '@firebase/app'
 export default {
   created () {
+    if (!firebase.auth().currentUser) {
+      this.$router.go('/')
+    }
   },
   firestore () {
     return {
-      todos: firestore.collection('todos')
+      todos: firestore.collection(firebase.auth().currentUser.uid)
     }
   },
   data: () => ({

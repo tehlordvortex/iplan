@@ -1,6 +1,7 @@
 import { firebase } from '@firebase/app'
 import '@firebase/firestore'
-import config from '@/config'
+import '@firebase/auth'
+import { fbConfig } from '@/config'
 
-export const firebaseApp = firebase.initializeApp(config)
+export const firebaseApp = firebase.initializeApp(fbConfig)
 export const firestore = firebaseApp.firestore()

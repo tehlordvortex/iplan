@@ -6,6 +6,46 @@
       fixed
       app
     >
+      <v-list two-line class="pa-0 ma-0">
+        <v-list-group v-if="currentUser">
+          <v-list-tile avatar slot="activator">
+            <v-list-tile-avatar>
+              <img v-if="!currentUser.isAnonymous" :src="currentUser.photoURL" />
+              <v-icon large v-else>account_circle</v-icon>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title v-if="currentUser.isAnonymous">Guest</v-list-tile-title>
+              <v-list-tile-title v-else v-text="currentUser.displayName" />
+              <v-list-tile-sub-title v-if="currentUser.email" v-text="currentUser.email"/>
+            </v-list-tile-content>
+          </v-list-tile>
+          <v-list-tile @click="logoutUser">
+            <v-list-tile-content>
+              <v-list-tile-title>Logout</v-list-tile-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon flat><v-icon>exit_to_app</v-icon></v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+          <v-list-tile v-if="currentUser.isAnonymous" @click="upgradeUser">
+            <v-list-tile-content>
+              <v-list-tile-title>Enable Sync</v-list-tile-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon flat><v-icon>sync</v-icon></v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+        </v-list-group>
+        <v-list-tile avatar v-else>
+          <v-list-tile-avatar>
+            <v-icon>account_circle</v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>Sign In</v-list-tile-title>
+          </v-list-tile-content>
+        </v-list-tile>
+      </v-list>
+      <v-divider></v-divider>
       <v-list>
         <v-list-tile
           value="true"
@@ -40,7 +80,15 @@
 </template>
 
 <script>
+import { firebase } from '@firebase/app'
 export default {
+  created () {
+    let self = this
+    firebase.auth().onAuthStateChanged(function (user) {
+      console.log(user)
+      self.currentUser = user
+    })
+  },
   data () {
     return {
       drawer: false,
@@ -48,7 +96,20 @@ export default {
         icon: 'home',
         title: 'Home'
       }],
-      title: 'iPlan'
+      title: 'iPlan',
+      currentUser: firebase.auth().currentUser
+    }
+  },
+  methods: {
+    logoutUser () {
+      firebase.auth().signOut().then(() => {
+        this.$router.go('/')
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    upgradeUser () {
+
     }
   },
   name: 'App'
