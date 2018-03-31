@@ -1,0 +1,24 @@
+[Settings]
+  ID = "wizardly-carson-da2a25"
+
+
+[[headers]]
+  for = "/index.html"
+[headers.values]
+  Cache-Control="max-age=0, no-cache, no-store, must-revalidate"
+  ETag=""
+  Pragma="no-cache"
+  Expires="Wed, 11 Jan 1984 05:00:00 GMT"
+
+[[headers]]
+  for = "/service-worker.js"
+[headers.values]
+  Cache-Control="max-age=0, no-cache, no-store, must-revalidate"
+  ETag=""
+  Pragma="no-cache"
+  Expires="Wed, 11 Jan 1984 05:00:00 GMT"
+
+[[headers]]
+  for = "/static/*"
+[headers.values]
+  Cache-Control="max-age=300, must-revalidate"
