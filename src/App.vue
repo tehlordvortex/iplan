@@ -159,10 +159,12 @@ export default {
         }
       }, 5000)
     }
+    if (this.ui) {
+      this.ui.reset()
+    }
     if (!this.ui) {
       this.ui = firebaseui.auth.AuthUI.getInstance() || new firebaseui.auth.AuthUI(firebase.auth())
     }
-    this.ui.reset()
     let self = this
     let data = null
     let firestore = firebase.firestore()
