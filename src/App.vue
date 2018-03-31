@@ -82,6 +82,7 @@
     </v-content>
     <v-dialog
       v-model="loginDialog"
+      max-width="500px"
     >
       <v-card>
         <v-toolbar class="pink" dark flat align-center justify-center>
