@@ -151,6 +151,14 @@ export default {
     })
   },
   mounted () {
+    if (navigator.serviceWorker) {
+      navigator.serviceWorker.addEventListener('message', (event) => {
+        if (event.data.updateAvailable) {
+          this.notificationText = 'An update has been installed, please refresh the page.'
+          this.showNotification = true
+        }
+      })
+    }
     if (this.loggingIn) {
       setTimeout(() => {
         if (self.loggingIn) {
