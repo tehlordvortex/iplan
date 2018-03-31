@@ -41,7 +41,7 @@
                           updateAvailable: true
                         })
                       });
-                    }
+                    })
                     break;
 
                   case 'redundant':
