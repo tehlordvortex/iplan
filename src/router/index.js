@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import { firebase } from '@firebase/app'
 
 import TodosPage from '@/components/TodosPage'
-import WelcomePage from '@/components/WelcomePage'
+// import LoginPage from '@/components/LoginPage'
 
 Vue.use(Router)
 
@@ -11,21 +11,18 @@ const router = new Router({
   routes: [
     {
       path: '*',
-      component: WelcomePage
+      component: TodosPage
     },
     {
       path: '/todos',
       name: 'todos',
-      component: TodosPage,
-      meta: {
-        requiresAuth: true
-      }
-    },
-    {
-      path: '/',
-      name: 'welcome',
-      component: WelcomePage
+      component: TodosPage
     }
+    // {
+    //   path: '/login',
+    //   name: 'login',
+    //   component: LoginPage
+    // }
   ]
 })
 

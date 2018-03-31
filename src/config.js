@@ -14,12 +14,19 @@ export const fbConfig = {
 
 export const fbUIConfig = {
   signInSuccessUrl: '#/todos',
+  autoUpgradeAnonymousUsers: true,
   callbacks: {
     signInSuccessWithAuthResult: function (authResult, redirectUrl) {
-      return true
+      return false
+    },
+    signInFailure: function (error) {
+      console.log(error)
+      if (error.code !== 'firebaseui/anonymous-upgrade-merge-conflict') {
+        return Promise.resolve()
+      }
     }
   },
-  signInFlow: 'redirect',
+  signInFlow: 'popup',
   signInOptions: [
     // Leave the lines as is for the providers you want to offer your users.
     {

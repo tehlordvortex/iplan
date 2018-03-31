@@ -3,16 +3,17 @@
     <v-layout row>
       <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
         <v-card>
+          <v-progress-linear v-if="dbLoading" :indeterminate="true"></v-progress-linear>
           <v-card-title class="title">Todos</v-card-title>
           <v-card-text>
-            <v-list  v-if="!smallScreen">
-              <v-list-tile ripple v-for="(todo, index) in todos" :key="index">
+            <v-list v-if="!smallScreen">
+              <v-list-tile ripple v-for="(todo, index) in todos" :key="index" class="taller">
                 <v-list-tile-action>
                   <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
                 </v-list-tile-action>
                 <v-list-tile-content>
-                  <v-list-tile-title v-if="!editingTodo || toEdit != todo['.key']">{{ todo.task }}</v-list-tile-title>
-                  <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit == todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
+                  <v-list-tile-title v-if="!editingTodo || toEdit !== todo['.key']">{{ todo.task }}</v-list-tile-title>
+                  <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit === todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
                 </v-list-tile-content>
                 <!-- <v-list-tile-action> -->
                   <v-btn icon flat @click="editTodo(todo)"><v-icon>create</v-icon></v-btn>
@@ -70,16 +71,16 @@ import { firebase } from '@firebase/app'
 
 export default {
   created () {
-    if (!firebase.auth().currentUser) {
-      this.$router.go('/')
-    }
+    // if (!firebase.auth().currentUser) {
+    //   this.$router.go('/')
+    // }
   },
-  firestore () {
-    let firestore = firebase.firestore()
-    return {
-      todos: firestore.collection(firebase.auth().currentUser.uid)
-    }
-  },
+  // firestore () {
+  //   let firestore = firebase.firestore()
+  //   return {
+  //     todos: firestore.collection(firebase.auth().currentUser.uid)
+  //   }
+  // },
   data: () => ({
     editingTodo: false,
     toEdit: '',
@@ -87,8 +88,25 @@ export default {
     todos: [
     ],
     newTodo: '',
-    editDialog: false
+    editDialog: false,
+    dbLoading: true
   }),
+  mounted () {
+    // let self = this
+    if (!this.currentUser) {
+      firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+          this.$binding('todos', firebase.firestore().collection(user.uid)).then(() => {
+            this.dbLoading = false
+          })
+        }
+      })
+    } else {
+      this.$binding('todos', firebase.firestore().collection(this.currentUser.uid)).then(() => {
+        this.dbLoading = false
+      })
+    }
+  },
   methods: {
     addTodo () {
       let todo = {
@@ -133,8 +151,11 @@ export default {
   },
   computed: {
     smallScreen () {
-      console.log(this.$vuetify.breakpoint.name)
+      // console.log(this.$vuetify.breakpoint.name)
       return this.$vuetify.breakpoint.name === 'xs'
+    },
+    currentUser () {
+      return this.$store.state.App.user
     }
   }
 }
@@ -155,5 +176,8 @@ li {
 }
 a {
   color: #42b983;
+}
+.taller {
+  height: 130% !important;
 }
 </style>

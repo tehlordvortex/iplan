@@ -12,6 +12,7 @@ import { firebase } from '@firebase/app'
 import '@firebase/firestore'
 import '@firebase/auth'
 import { fbConfig } from '@/config'
+import store from '@/store'
 
 Vue.use(Vuetify, {
   theme: {
@@ -30,6 +31,7 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })
