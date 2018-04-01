@@ -103,6 +103,8 @@
     <v-snackbar
       v-model="showNotification"
       :timeout="notificationTimeout"
+      :color="notificationColor"
+      :multi-line="multilineNotification"
     >
       {{ notificationText }}
       <v-btn flat color="pink" @click.native="snackbar = false">Close</v-btn>
@@ -120,7 +122,19 @@ export default {
     firebase.firestore().enablePersistence()
       .then(() => console.log('Persistence enabled'))
       .catch((err) => {
-        console.log(err)
+        if (err.code === 'failed-precondition') {
+          this.notificationText = 'Couldn\'t enable offline storage because more than one iPlan tab is open.\n' +
+                                  'Please close other tabs and refresh this page.'
+          this.notificationTimeout = 0
+          this.notificationColor = 'error'
+          this.multilineNotification = true
+          this.showNotification = true
+        } else if (err.code === 'unimplemented') {
+          this.notificationText = 'Offline storage not available, keep your device online.'
+          this.notificationTimeout = 0
+          this.notificationColor = 'error'
+          this.showNotification = true
+        }
       })
     if (!this.currentUser) {
       console.log('Anonymous sign in')
@@ -133,6 +147,8 @@ export default {
         self.loginDialog = false
         self.loggingIn = false
         self.notificationText = 'Signed in as ' + ((user.isAnonymous) ? 'Anonymous' : (user.displayName || user.email))
+        self.notificationTimeout = 1500
+        self.notificationColor = 'black'
         self.showNotification = true
         // console.log(user)
         if (!self.currentUser || user.uid !== self.currentUser.uid) {
@@ -155,7 +171,9 @@ export default {
     if (navigator.serviceWorker) {
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data.updateAvailable) {
-          this.notificationText = 'An update has been installed, please refresh the page.'
+          this.notificationText = 'An update has been installed, please refresh the page to avoid issues.'
+          this.notificationTimeout = 0
+          this.notificationColor = 'warning'
           this.showNotification = true
         }
       })
@@ -164,6 +182,8 @@ export default {
       setTimeout(() => {
         if (self.loggingIn) {
           this.notificationText = 'Authentication seems to be taking a while, try reloading the page.'
+          this.notificationTimeout = 0
+          this.notificationColor = 'warning'
           this.showNotification = true
         }
       }, 5000)
@@ -182,9 +202,9 @@ export default {
       return false
     }
     fbUIConfig.callbacks.signInFailure = (err) => {
-      console.log(err)
+      // console.log(err)
       let anonymousUser = firebase.auth().currentUser
-      console.log(anonymousUser)
+      // console.log(anonymousUser)
       if (err.code !== 'firebaseui/anonymous-upgrade-merge-conflict') {
         return Promise.resolve()
       }
@@ -239,14 +259,22 @@ export default {
       showNotification: false,
       notificationText: '',
       notificationTimeout: 1500,
+      notificationColor: 'black',
+      multilineNotification: false,
       loggingIn: true
     }
   },
-  // watch: {
-  //   logInHappened (val) {
-  //     if (val == true)
-  //   }
-  // },
+  watch: {
+    showNotification (val) {
+      // reset everything
+      if (val === false) {
+        this.notificationText = ''
+        this.notificationTimeout = 1500
+        this.notificationColor = 'black'
+        this.multilineNotification = false
+      }
+    }
+  },
   methods: {
     logoutUser () {
       firebase.auth().signOut().then(() => {
@@ -262,7 +290,7 @@ export default {
   },
   computed: {
     currentUser () {
-      console.log(this.$store)
+      // console.log(this.$store)
       return this.$store.state.App.userData
     }
   },

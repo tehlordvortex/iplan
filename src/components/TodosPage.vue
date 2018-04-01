@@ -6,40 +6,43 @@
           <v-progress-linear v-if="dbLoading" :indeterminate="true"></v-progress-linear>
           <v-card-title class="title">Todos</v-card-title>
           <v-card-text>
-            <v-list v-if="!smallScreen">
-              <v-list-tile ripple v-for="(todo, index) in todos" :key="index" class="taller">
-                <v-list-tile-action>
-                  <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
-                </v-list-tile-action>
-                <v-list-tile-content>
-                  <v-list-tile-title v-if="!editingTodo || toEdit !== todo['.key']">{{ todo.task }}</v-list-tile-title>
-                  <v-text-field single-line v-model="todo.task" v-else-if="editingTodo && toEdit === todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
-                </v-list-tile-content>
-                <!-- <v-list-tile-action> -->
-                  <v-btn icon flat @click="editTodo(todo)"><v-icon>create</v-icon></v-btn>
-                  <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
-                <!-- </v-list-tile-action> -->
-              </v-list-tile>
-            </v-list>
-            <v-list v-else>
-              <v-list-group v-for="(todo, index) in todos" :key="index" >
-                <v-list-tile slot="activator">
+            <template v-if="todos && todos.length > 0">
+              <v-list v-if="!smallScreen">
+                <v-list-tile ripple v-for="(todo, index) in todos" :key="index" class="taller">
                   <v-list-tile-action>
                     <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title v-if="!editingTodo || toEdit != todo['.key']">{{ todo.task }}</v-list-tile-title>
-                    <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit == todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
+                    <v-list-tile-title v-if="!editingTodo || toEdit !== todo['.key']">{{ todo.task }}</v-list-tile-title>
+                    <v-text-field single-line v-model="todo.task" v-else-if="editingTodo && toEdit === todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
                   </v-list-tile-content>
+                  <!-- <v-list-tile-action> -->
+                    <v-btn icon flat @click="editTodo(todo)"><v-icon>create</v-icon></v-btn>
+                    <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
+                  <!-- </v-list-tile-action> -->
                 </v-list-tile>
-                <v-list-tile>
-                  <v-btn icon flat @click="editTodoMobile(todo)"><v-icon>create</v-icon></v-btn>
-                  <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
-                  <!-- </v-list-tile-content> -->
-                </v-list-tile>
-              </v-list-group>
-            </v-list>
-            <v-text-field v-model="newTodo" @keyup.enter="addTodo" />
+              </v-list>
+              <v-list v-else>
+                <v-list-group v-for="(todo, index) in todos" :key="index" >
+                  <v-list-tile slot="activator">
+                    <v-list-tile-action>
+                      <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
+                    </v-list-tile-action>
+                    <v-list-tile-content>
+                      <v-list-tile-title v-if="!editingTodo || toEdit != todo['.key']">{{ todo.task }}</v-list-tile-title>
+                      <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit == todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
+                    </v-list-tile-content>
+                  </v-list-tile>
+                  <v-list-tile>
+                    <v-btn icon flat @click="editTodoMobile(todo)"><v-icon>create</v-icon></v-btn>
+                    <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
+                    <!-- </v-list-tile-content> -->
+                  </v-list-tile>
+                </v-list-group>
+              </v-list>
+            </template>
+            <p v-else>No todos yet. Try adding one below.</p>
+            <v-text-field single-line label="What do you plan on doing?" v-model="newTodo" @keyup.enter="addTodo" />
           </v-card-text>
         </v-card>
       </v-flex>
@@ -70,11 +73,6 @@ import { firebase } from '@firebase/app'
 // let firestore = null
 
 export default {
-  created () {
-    // if (!firebase.auth().currentUser) {
-    //   this.$router.go('/')
-    // }
-  },
   // firestore () {
   //   let firestore = firebase.firestore()
   //   return {
@@ -89,19 +87,29 @@ export default {
     ],
     newTodo: '',
     editDialog: false,
-    dbLoading: true
+    dbLoading: true,
+    wasAnonymous: false
   }),
-  mounted () {
+  created () {
     // let self = this
     if (!this.currentUser) {
       firebase.auth().onAuthStateChanged((user) => {
         if (user) {
+          if (user.isAnonymous) this.wasAnonymous = true
+          // changing from anonymous to signed in user, db will reload
+          if (this.wasAnonymous && !user.isAnonymous) {
+            this.dbLoading = true
+            this.wasAnonymous = false
+          }
           this.$binding('todos', firebase.firestore().collection(user.uid)).then(() => {
             this.dbLoading = false
           })
+        } else {
+          console.log('Signed out!')
         }
       })
     } else {
+      this.wasAnonymous = this.currentUser.isAnonymous
       this.$binding('todos', firebase.firestore().collection(this.currentUser.uid)).then(() => {
         this.dbLoading = false
       })
