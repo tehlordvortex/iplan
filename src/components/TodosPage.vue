@@ -13,7 +13,7 @@
                 </v-list-tile-action>
                 <v-list-tile-content>
                   <v-list-tile-title v-if="!editingTodo || toEdit !== todo['.key']">{{ todo.task }}</v-list-tile-title>
-                  <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit === todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
+                  <v-text-field single-line v-model="todo.task" v-else-if="editingTodo && toEdit === todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
                 </v-list-tile-content>
                 <!-- <v-list-tile-action> -->
                   <v-btn icon flat @click="editTodo(todo)"><v-icon>create</v-icon></v-btn>
@@ -125,8 +125,12 @@ export default {
       })
     },
     editTodo (todo) {
-      this.editingTodo = true
-      this.toEdit = todo['.key']
+      if (this.editingTodo === true && this.toEdit === todo['.key']) {
+        this.stopEditing()
+      } else {
+        this.editingTodo = true
+        this.toEdit = todo['.key']
+      }
     },
     updateTodoTask (todo, newTask) {
       newTask = newTask || todo.task
@@ -162,22 +166,9 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
-a {
-  color: #42b983;
-}
-.taller {
-  height: 130% !important;
+<style>
+
+.taller > .list__tile {
+  height: 56px !important;
 }
 </style>
