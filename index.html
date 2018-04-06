@@ -20,14 +20,15 @@
     <link rel="apple-touch-icon" sizes="180x180" href="<%= htmlWebpackPlugin.files.publicPath %>static/img/icons/apple-touch-icon.png">
     <link rel="mask-icon" href="<%= htmlWebpackPlugin.files.publicPath %>static/img/icons/safari-pinned-tab.svg" color="#2196f3">
     <!-- Add to home screen for Windows -->
-    <meta name="msapplication-config" content="/static/img/icons/browserconfig.xml">
+    <meta name="msapplication-config" content="<%= htmlWebpackPlugin.files.publicPath %>static/img/icons/browserconfig.xml">
     <meta name="msapplication-TileImage" content="<%= htmlWebpackPlugin.files.publicPath %>static/img/icons/msapplication-icon-144x144.png">
     <meta name="msapplication-TileColor" content="#2d89ef">
     <% for (var chunk of webpack.chunks) {
         for (var file of chunk.files) {
           if (file.match(/\.(js|css)$/)) { %>
     <link rel="<%= chunk.initial?'preload':'prefetch' %>" href="<%= htmlWebpackPlugin.files.publicPath + file %>" as="<%= file.match(/\.css$/)?'style':'script' %>"><% }}} %>
-    <link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">
+    <!--<link href='https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons' rel="stylesheet">-->
+    <link rel="stylesheet" href="<%= htmlWebpackPlugin.files.publicPath %>static/material-icons/material-icons.css">
   </head>
   <body>
     <noscript>
