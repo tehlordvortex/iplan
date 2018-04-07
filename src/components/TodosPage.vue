@@ -13,12 +13,14 @@
                     <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
                   </v-list-tile-action>
                   <v-list-tile-content>
-                    <v-list-tile-title v-if="!editingTodo || toEdit !== todo['.key']">{{ todo.task }}</v-list-tile-title>
+                    <v-list-tile-title v-if="!editingTodo || toEdit !== todo['.key']" :class="todo.done ? 'strike' : ''">
+                      {{ todo.task }}
+                    </v-list-tile-title>
                     <v-text-field single-line v-model="todo.task" v-else-if="editingTodo && toEdit === todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
                   </v-list-tile-content>
                   <!-- <v-list-tile-action> -->
-                    <v-btn icon flat @click="editTodo(todo)"><v-icon>create</v-icon></v-btn>
-                    <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
+                    <v-btn icon data-tour-step="2" flat @click="editTodo(todo)"><v-icon>create</v-icon></v-btn>
+                    <v-btn icon data-tour-step="3" flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
                   <!-- </v-list-tile-action> -->
                 </v-list-tile>
               </v-list>
@@ -29,20 +31,20 @@
                       <v-checkbox v-model="todo.done" @click="markDone(todo)"/>
                     </v-list-tile-action>
                     <v-list-tile-content>
-                      <v-list-tile-title v-if="!editingTodo || toEdit != todo['.key']">{{ todo.task }}</v-list-tile-title>
+                      <v-list-tile-title v-if="!editingTodo || toEdit != todo['.key']" :class="todo.done ? 'strike' : ''">{{ todo.task }}</v-list-tile-title>
                       <v-text-field v-model="todo.task" v-else-if="editingTodo && toEdit == todo['.key']" @blur="updateTodo(todo)" @keyup.enter="updateTodo(todo)" />
                     </v-list-tile-content>
                   </v-list-tile>
                   <v-list-tile>
-                    <v-btn icon flat @click="editTodoMobile(todo)"><v-icon>create</v-icon></v-btn>
-                    <v-btn icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
+                    <v-btn data-tour-mobile-step="2" icon flat @click="editTodoMobile(todo)"><v-icon>create</v-icon></v-btn>
+                    <v-btn data-tour-mobile-step="3" icon flat @click="deleteTodo(todo)"><v-icon>delete</v-icon></v-btn>
                     <!-- </v-list-tile-content> -->
                   </v-list-tile>
                 </v-list-group>
               </v-list>
             </template>
             <p v-else>No todos yet. Try adding one below.</p>
-            <v-text-field single-line label="What do you plan on doing?" v-model="newTodo" @keyup.enter="addTodo" />
+            <v-text-field data-tour-step="1" single-line label="What do you plan on doing?" v-model="newTodo" @keyup.enter="addTodo" />
           </v-card-text>
         </v-card>
       </v-flex>
@@ -64,6 +66,9 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-tour name="welcomeTour" :steps="welcomeSteps"></v-tour>
+    <v-tour name="actionsTour" :steps="actionsSteps"></v-tour>
+    <v-tour name="actionsMobileTour" :steps="actionsMobileSteps"></v-tour>
   </v-container>
 </template>
 
@@ -83,12 +88,37 @@ export default {
     editingTodo: false,
     toEdit: '',
     todoToEdit: null,
-    todos: [
-    ],
+    todos: [],
     newTodo: '',
     editDialog: false,
     dbLoading: true,
-    wasAnonymous: false
+    wasAnonymous: false,
+    welcomeSteps: [
+      {
+        target: '[data-tour-step="1"]',
+        content: `Type a todo here and hit enter!`
+      }
+    ],
+    actionsSteps: [
+      {
+        target: '[data-tour-step="2"]',
+        content: `Click here to edit your todo!`
+      },
+      {
+        target: '[data-tour-step="3"]',
+        content: `Click here to delete your todo!`
+      }
+    ],
+    actionsMobileSteps: [
+      {
+        target: '[data-tour-mobile-step="2"]',
+        content: `Click here to edit your todo!`
+      },
+      {
+        target: '[data-tour-mobile-step="2"]',
+        content: `Click here to delete your todo!`
+      }
+    ]
   }),
   created () {
     // let self = this
@@ -115,6 +145,9 @@ export default {
       })
     }
   },
+  mounted () {
+    this.$tours['welcomeTour'].start()
+  },
   methods: {
     addTodo () {
       let todo = {
@@ -123,6 +156,7 @@ export default {
       }
       this.$firestore.todos.add(todo)
       this.newTodo = ''
+      setTimeout(() => this.$tours[(this.smallScreen) ? 'actionsMobileTour' : 'actionsTour'].start(), 1000)
     },
     deleteTodo (todo) {
       this.$firestore.todos.doc(todo['.key']).delete()
@@ -176,6 +210,9 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
+.strike {
+  text-decoration: line-through;
+}
 .taller > .list__tile {
   height: 56px !important;
 }

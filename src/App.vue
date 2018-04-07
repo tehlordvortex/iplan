@@ -11,12 +11,12 @@
         <v-list-group v-if="currentUser">
           <v-list-tile avatar slot="activator">
             <v-list-tile-avatar>
-              <img v-if="!currentUser.isAnonymous" :src="currentUser.photoURL" />
+              <img v-if="!currentUser.isAnonymous" :src="avatar || currentUser.photoURL" />
               <v-icon large v-else>account_circle</v-icon>
             </v-list-tile-avatar>
             <v-list-tile-content>
               <v-list-tile-title v-if="currentUser.isAnonymous">Anonymous</v-list-tile-title>
-              <v-list-tile-title v-else v-text="currentUser.displayName" />
+              <v-list-tile-title v-else-if="currentUser.displayName" v-text="currentUser.displayName" />
               <v-list-tile-sub-title v-if="currentUser.email" v-text="currentUser.email"/>
             </v-list-tile-content>
           </v-list-tile>
@@ -150,6 +150,9 @@ export default {
         self.notificationTimeout = 1500
         self.notificationColor = 'black'
         self.showNotification = true
+        if (user.photoURL) {
+          self.$store.dispatch('cacheAvatar', user.photoURL)
+        }
         // console.log(user)
         if (!self.currentUser || user.uid !== self.currentUser.uid) {
           // reactive properties make Vuex scream at me, get rid of them
@@ -226,7 +229,9 @@ export default {
           let copiedDocuments = documents.map((doc) => doc.get().then((doc) => {
             // console.log(doc.exists)
             // console.log(doc.data)
-            userCollection.doc(doc.id).set(doc.data())
+            if (doc.exists()) {
+              userCollection.doc(doc.id).set(doc.data())
+            }
           }))
           // wait for everything to copy before deleting the old user
           return Promise.all(copiedDocuments)
@@ -292,6 +297,9 @@ export default {
     currentUser () {
       // console.log(this.$store)
       return this.$store.state.App.userData
+    },
+    avatar () {
+      return this.$store.state.App.userAvatar
     }
   },
   name: 'App'
