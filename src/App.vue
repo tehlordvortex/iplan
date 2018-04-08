@@ -175,7 +175,7 @@ export default {
       navigator.serviceWorker.addEventListener('message', (event) => {
         if (event.data.updateAvailable) {
           this.notificationText = 'An update has been installed, please refresh the page to avoid issues.'
-          this.notificationTimeout = 0
+          this.notificationTimeout = 2000
           this.notificationColor = 'warning'
           this.showNotification = true
         }
@@ -185,7 +185,7 @@ export default {
       setTimeout(() => {
         if (self.loggingIn) {
           this.notificationText = 'Authentication seems to be taking a while, try reloading the page.'
-          this.notificationTimeout = 0
+          this.notificationTimeout = 2000
           this.notificationColor = 'warning'
           this.showNotification = true
         }
