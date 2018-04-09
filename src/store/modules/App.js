@@ -22,6 +22,7 @@ const actions = {
   cacheAvatar ({ commit }, photoURL) {
     console.log('Caching avatar:', photoURL)
     let xhttp = new window.XMLHttpRequest()
+    xhttp.responseType = 'blob'
     xhttp.onreadystatechange = function () {
       if (this.readyState === 4 && this.status === 200) {
         let reader = new FileReader()
