@@ -229,7 +229,7 @@ export default {
           let copiedDocuments = documents.map((doc) => doc.get().then((doc) => {
             // console.log(doc.exists)
             // console.log(doc.data)
-            if (doc.exists()) {
+            if (doc.exists) {
               userCollection.doc(doc.id).set(doc.data())
             }
           }))
