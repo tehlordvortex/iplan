@@ -6309,6 +6309,12 @@ vm-browserify@0.0.4:
   dependencies:
     indexof "0.0.1"
 
+vue-content-loading@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/vue-content-loading/-/vue-content-loading-1.4.0.tgz#a551c9663898942788de9c64bc466ad3bddd8d0a"
+  dependencies:
+    vue "^2.5.13"
+
 vue-firestore@^0.2.6:
   version "0.2.6"
   resolved "https://registry.yarnpkg.com/vue-firestore/-/vue-firestore-0.2.6.tgz#98069f4a2fd11fa7a1d3677ebf5246b2babad5ce"
