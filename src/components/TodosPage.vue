@@ -8,6 +8,8 @@
             <v-list transition="fade" v-show="dbLoading">
               <vcl-todo-item></vcl-todo-item>
               <vcl-todo-item></vcl-todo-item>
+              <vcl-todo-item></vcl-todo-item>
+              <vcl-todo-item></vcl-todo-item>
             </v-list>
             <template v-if="todos && todos.length > 0">
               <v-list v-if="!smallScreen">
