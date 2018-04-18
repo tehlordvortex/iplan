@@ -3,9 +3,12 @@
     <v-layout row>
       <v-flex xs12 sm10 offset-sm1 md8 offset-md2>
         <v-card>
-          <v-progress-linear v-if="dbLoading" :indeterminate="true"></v-progress-linear>
           <v-card-title class="title">Todos</v-card-title>
           <v-card-text>
+            <v-list transition="fade" v-show="dbLoading">
+              <vcl-todo-item></vcl-todo-item>
+              <vcl-todo-item></vcl-todo-item>
+            </v-list>
             <template v-if="todos && todos.length > 0">
               <v-list v-if="!smallScreen">
                 <v-list-tile ripple v-for="(todo, index) in todos" :key="index" class="taller">
@@ -43,7 +46,7 @@
                 </v-list-group>
               </v-list>
             </template>
-            <p v-else>No todos yet. Try adding one below.</p>
+            <p v-else-if="(!dbLoading) && todos && todos.length === 0">No todos yet. Try adding one below.</p>
             <v-text-field data-tour-step="1" single-line label="What do you plan on doing?" v-model="newTodo" @keyup.enter="addTodo" />
           </v-card-text>
         </v-card>
@@ -75,6 +78,7 @@
 <script>
 // import { firestore } from '@/fbase'
 import { firebase } from '@firebase/app'
+import VclTodoItem from './VclTodoItem'
 // let firestore = null
 
 export default {
@@ -132,7 +136,7 @@ export default {
             this.wasAnonymous = false
           }
           this.$binding('todos', firebase.firestore().collection(user.uid)).then(() => {
-            this.dbLoading = false
+            this.doneLoading()
           })
         } else {
           console.log('Signed out!')
@@ -141,14 +145,17 @@ export default {
     } else {
       this.wasAnonymous = this.currentUser.isAnonymous
       this.$binding('todos', firebase.firestore().collection(this.currentUser.uid)).then(() => {
-        this.dbLoading = false
+        this.doneLoading()
       })
     }
   },
   mounted () {
-    this.$tours['welcomeTour'].start()
   },
   methods: {
+    doneLoading () {
+      this.dbLoading = false
+      this.$tours['welcomeTour'].start()
+    },
     addTodo () {
       let todo = {
         task: this.newTodo,
@@ -203,6 +210,9 @@ export default {
     currentUser () {
       return this.$store.state.App.user
     }
+  },
+  components: {
+    VclTodoItem
   }
 }
 </script>
